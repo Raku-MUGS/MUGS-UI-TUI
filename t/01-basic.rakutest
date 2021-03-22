@@ -1,0 +1,6 @@
+use Test;
+use MUGS::UI::TUI;
+
+pass "replace me";
+
+done-testing;
