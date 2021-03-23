@@ -1,7 +1,7 @@
 NAME
 ====
 
-MUGS::UI::TUI - TUI UI for MUGS, including App and game UIs
+MUGS::UI::TUI - Fullscreen Terminal UI for MUGS, including App and game UIs
 
 SYNOPSIS
 ========

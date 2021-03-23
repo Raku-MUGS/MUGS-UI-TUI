@@ -10,7 +10,7 @@
     "MUGS::Games:ver<0.1.0>",
     "Terminal::Print"
   ],
-  "description": "TUI UI for MUGS, including App and game UIs",
+  "description": "Fullscreen Terminal UI for MUGS, including App and game UIs",
   "license": "Artistic-2.0",
   "name": "MUGS::UI::TUI",
   "perl": "6.d",
