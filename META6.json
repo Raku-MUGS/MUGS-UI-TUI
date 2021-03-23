@@ -6,7 +6,7 @@
   ],
   "depends": [
   ],
-  "description": "blah blah blah",
+  "description": "TUI UI for MUGS, including App and game UIs",
   "license": "Artistic-2.0",
   "name": "MUGS::UI::TUI",
   "perl": "6.d",
@@ -20,5 +20,5 @@
   ],
   "test-depends": [
   ],
-  "version": "0.0.1"
+  "version": "0.1.0"
 }
