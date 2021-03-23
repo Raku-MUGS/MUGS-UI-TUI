@@ -13,6 +13,7 @@
   "name": "MUGS::UI::TUI",
   "perl": "6.d",
   "provides": {
+    "MUGS::App::TUI": "lib/MUGS/App/TUI.rakumod",
     "MUGS::UI::TUI": "lib/MUGS/UI/TUI.rakumod"
   },
   "resources": [

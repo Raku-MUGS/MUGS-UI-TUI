@@ -9,7 +9,7 @@ use MUGS::Games:ver<0.1.0>;
 ### TUI INTERFACE
 
 use MUGS::UI::TUI;
-# use MUGS::App::TUI Empty;
+use MUGS::App::TUI Empty;
 
 
 pass "all modules loaded successfully";
