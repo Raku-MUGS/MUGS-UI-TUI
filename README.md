@@ -58,9 +58,9 @@ DESCRIPTION
 
 **NOTE: See the [top-level MUGS repo](https://github.com/Raku-MUGS/MUGS) for more info.**
 
-MUGS::UI::TUI is a TUI (Terminal UI) app (`mugs-tui`) and a set of UI plugins to play games in [MUGS-Core](https://github.com/Raku-MUGS/MUGS-Core) and [MUGS-Games](https://github.com/Raku-MUGS/MUGS-Games) via the TUI.
+MUGS::UI::TUI is a TUI (Terminal UI) app (`mugs-tui`) and a growing set of UI plugins to play games in [MUGS-Core](https://github.com/Raku-MUGS/MUGS-Core) and [MUGS-Games](https://github.com/Raku-MUGS/MUGS-Games) via the TUI.
 
-This early version only contains very limited modules and plugins, and should not be considered "fully released" in the same way that the CLI and WebSimple UIs are.
+**This early version only contains very limited modules and plugins, is missing significant functionality, and should not be considered "fully released" in the same way that the CLI and WebSimple UIs are.**
 
 AUTHOR
 ======
