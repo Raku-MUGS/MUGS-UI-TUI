@@ -1,6 +1,6 @@
 # ABSTRACT: TUIs (full-screen Terminal UIs) for MUGS, including App and game UIs
 
-unit module MUGS::UI::TUI:auth<zef:japhb>:ver<0.1.0>;
+unit module MUGS::UI::TUI:auth<zef:japhb>:ver<0.1.1>;
 
 use Terminal::Print;
 use Terminal::Print::DecodedInput;

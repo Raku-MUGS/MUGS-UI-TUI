@@ -1,4 +1,8 @@
 Revision history for MUGS-UI-TUI
 
+0.1.1  2021-04-15
+  - Bump versioned dependencies
+
+
 0.1.0  2021-03-22
   - Initial version: very limited skeleton, no supported games
