@@ -1,5 +1,9 @@
 Revision history for MUGS-UI-TUI
 
+0.1.2  *WIP*
+  - Add simple UI for PFX performance test "game"
+
+
 0.1.1  2021-04-15
   - Bump versioned dependencies
 
