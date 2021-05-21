@@ -17,8 +17,9 @@ my class Root is Terminal::Print::Widget does Terminal::Print::Pixelated { }
 class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
     has $.grid;
     has $.root-widget;
-    has $.update;
-    has $.delay-estimate;
+    has $.sim-time  = 0e0;
+    has $.prev-time = now;
+    has @.update-queue;
     has Lock::Async $!update-lock .= new;
 
     method game-type() { 'pfx' }
@@ -28,7 +29,13 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         $!root-widget = Root.new-from-grid($!grid);
     }
 
-    method show-initial-state(::?CLASS:D:) {
+    method show-initial-state(::?CLASS:D: Real:D $game-time) {
+        # Start simulating at the current game time
+        $!sim-time = $game-time;
+
+        # Blank the screen and add a stopwatch icon to indicate about to begin
+        $.T.clear-screen;
+        $!grid.print-cell($!grid.w div 2, $!grid.h div 2, '⏱');
     }
 
     method serialization-stats($col, $row, $type, $bytes, $validate, $struct, $codec) {
@@ -127,52 +134,54 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         self.serialization-stats($col, $row, 'JSON', $json-bytes, $tv, $ts, $tj);
     }
 
-    method general-stats($col, $row, $message, $validated, $tr, $delay, $wait, $tc) {
+    method general-stats($col, $row, $message, $validated, $tr) {
         my $count       = $validated<effects>[0]<particles>.elems / 7;
         my $clock-skew  = $message.created - $validated<update-sent>;
 
         $!grid.set-span($col, $row,     sprintf('%-12s  %8d', 'Particles', $count), '');
         $!grid.set-span($col, $row + 1, sprintf('%-12s  %6.1fm‭s', 'Clock skew',
                                                 $clock-skew * 1000), '');
-        $!grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fm‭s', 'Est. delay',
-                                                $delay * 1000), '');
-        $!grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fm‭s', 'Wait time',
-                                                $wait * 1000), '');
-        $!grid.set-span($col, $row + 4, sprintf('%-12s  %6.1fm‭s', 'Time comp',
-                                                $tc * 1000), '');
-        $!grid.set-span($col, $row + 5, sprintf('%-12s  %6.1fm‭s', 'Render time',
+        $!grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fm‭s', 'Render time',
                                                 $tr * 1000), '');
-        $!grid.set-span($col, $row + 6, sprintf('%-12s  %6.1fms', 'Δt',
+        $!grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms', 'Δt',
                                                 $validated<dt> * 1000), '');
-        $!grid.set-span($col, $row + 7, sprintf('%-12s  %8.3f', 'Game time',
+        $!grid.set-span($col, $row + 4, sprintf('%-12s  %8.3f', 'Game time',
                                                 $validated<game-time>), '');
     }
 
-    method show-stats($message, $validated, $tr, $delay, $wait, $tc) {
-        self.general-stats(0,  0, $message, $validated, $tr, $delay, $wait, $tc);
-        # self.CBOR-stats(   0,  9, $message);
-        # self.JSON-stats(   0, 18, $message);
+    method show-stats($message, $validated, $tr) {
+        self.general-stats(0,  0, $message, $validated, $tr);
+        # self.CBOR-stats(   0,  6, $message);
+        # self.JSON-stats(   0, 15, $message);
     }
 
-    method render-particles($validated, num $tc) {
+    method render-particles($update0, $update1, num $ratio) {
         my int $w   = $.grid.w;
-        # my int $h   = $.grid.h;
         my int $h   = $.grid.h * 2;  # Using Unicode half-height blocks
         my int $cx  = $w div 2;
         my int $cy  = $h div 2;
         my num $r   = (min $cx, $cy).Num;
-        my num $tc2 = $tc / 2e0;
+        my num $omr = 1e0 - $ratio;
 
         my @colors;
         my $color = 16;
-        for @($validated<effects>) -> $effect {
-            for @($effect<particles>) -> num $x,  num $y,
-                                         num $vx, num $vy,
-                                         num $ax, num $ay,
-                                         num $tc {
-                # Compensate for time waiting for render to begin
-                my num $x-comp =  $x + ($vx + $ax * $tc2) * $tc;
-                my num $y-comp =  $y + ($vy + $ay * $tc2) * $tc;
+        for @($update0<effects>) -> $effect {
+            # See if there is a matching interpolation target for this effect
+            my $target;
+            $target = $update1<effects>.first(*<id> == $effect<id>)
+                   if $update1 && $ratio;
+            $target = $target<particles> if $target;
+
+            my $p = $effect<particles>;
+            for ^($p.elems div 7) -> int $index {
+                my int $base = $index * 7;
+                my num $x    = $p[$base];
+                my num $y    = $p[$base + 1];
+
+                if $target {
+                    $x = $x * $omr + $target[$base]     * $ratio;
+                    $y = $y * $omr + $target[$base + 1] * $ratio;
+                }
 
                 # Scale, flip Y dimension, and recenter to current particle area
                 my int $px = ( $x * $r).floor + $cx;
@@ -186,43 +195,64 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
                      || $py < 0 || $py >= $h;
 
                 # Different particle renderers with different performance profiles
-                # $!grid.print-string($px, $py, '*');
-                # $!grid.change-cell($px, $py, '*');
-                $!grid.change-cell($px, $py +> 1, $!grid.cell('*', ~$color));
-                # @colors[$py][$px] = ~$color;
+                # $!grid.print-string($px, $py +> 1, '*');
+                # $!grid.change-cell($px, $py +> 1, $!grid.cell('*', ~$color));
+                @colors[$py][$px] = ~$color;
             }
         }
         # Only needed if half-height block "pixels" are being computed
         $!root-widget.composite-pixels(@colors) if @colors;
     }
 
-
-    method render-latest-update() {
-        my $update;
-        my $delay-estimate;
+    method render-updates() {
+        # Determine interpolation window (slightly in past)
+        my ($update0, $update1);
         $!update-lock.protect: {
-            $update         = $!update;
-            $delay-estimate = $!delay-estimate;
+            # Drop updates older than window around current client sim time
+            @!update-queue.shift
+                while @!update-queue.elems > 2
+                   && @!update-queue[1]<validated><game-time> <= $!sim-time;
+
+            # Use two earliest remaining updates as interpolation bounds
+            $update0 = @!update-queue[0];
+            $update1 = @!update-queue[1];
         }
-        return unless $update;
 
-        # Current algorithm:
-        # During render, compensate for expected particle motion *only* for
-        # delay caused by update waiting for next available render frame, *not*
-        # for the time lag + clock skew between the server and client.
+        # Don't show anything if no data to work with
+        return unless $update0;
 
-        my $update-wait       = now - $update<message>.created;
-        my $time-compensation = $update-wait;
+        # Interpolation ratio between updates
+        my $ratio = 0e0;
 
+        if $update0 && $update1 {
+            # Enough update data in order to show interpolated results
+            my $update-start = $update0<validated><game-time>;
+            my $update-end   = $update1<validated><game-time>;
+            my $update-dur   = $update-end - $update-start;
+
+            $!sim-time = min $update-end, max $update-start, $!sim-time;
+            $ratio = (($!sim-time - $update-start) / $update-dur).Num if $update-dur;
+        }
+        elsif $update0 {
+            # Only one update available; render static view
+            $!sim-time = $update0<validated><game-time>;
+        }
+
+        # Render interpolated frame
         my $t0 = now;
         $!grid.clear;
-        self.render-particles($update<validated>, $time-compensation.Num);
+        self.render-particles($update0<validated>, ($update1 // {})<validated>, $ratio);
         my $tr = now - $t0;
 
-        self.show-stats($update<message>, $update<validated>, $tr,
-                        $delay-estimate, $update-wait, $time-compensation);
+        # Show stats
+        self.show-stats($update0<message>, $update0<validated>, $tr);
 
         print $!grid;
+
+        # Push sim-time forward by time to end of this render
+        my $now      = now;
+        $!sim-time  += $now - $!prev-time;
+        $!prev-time  = $now;
     }
 
     method validate-and-save-update($message) {
@@ -236,6 +266,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
             effects        => [
                                {
                                    type      => Str,
+                                   id        => Int,
                                    particles => array[num32],
                                }
                            ],
@@ -243,20 +274,21 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
 
         my $validated = $message.validated-data(%schema);
         my $delay     = $message.created - $validated<update-sent>;
-        my $alpha     = .1e0;
+
+        # Estimate delivery delay with an EWMA (Exponentially Weighted Moving Average)
+        # my $alpha          = .1e0;
+        # $!delay-estimate //= $delay;
+        # $!delay-estimate   = (1 - $alpha) * $!delay-estimate + $alpha * $delay;
 
         $!update-lock.protect: {
-            $!update = hash(:$message, :$validated);
-
-            # Estimate delivery delay with an EWMA (Exponentially Weighted Moving Average)
-            $!delay-estimate //= $delay;
-            $!delay-estimate   = (1 - $alpha) * $!delay-estimate + $alpha * $delay;
+            @!update-queue.push: hash(:$message, :$validated);
         }
     }
 
     method handle-game-event($message) {
         constant %schema = {
             event => {
+                game-time  => Real,
                 event-type => GameEventType(Int),
             }
         };
@@ -264,7 +296,8 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         my $validated  = $message.validated-data(%schema)<event>;
         my $event-type = GameEventType($validated<event-type>);
 
-        self.show-initial-state if $event-type == GameStarted;
+        self.show-initial-state($validated<game-time>)
+            if $event-type == GameStarted;
     }
 
     method handle-server-message($message) {
@@ -280,8 +313,8 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
 
     method main-loop(::?CLASS:D:) {
         react {
-            whenever Supply.interval(.033) {
-                self.render-latest-update;
+            whenever Supply.interval(1/60) {
+                self.render-updates;
             }
             whenever $.in {
                 when 'q' { await $.client.leave; done  }
