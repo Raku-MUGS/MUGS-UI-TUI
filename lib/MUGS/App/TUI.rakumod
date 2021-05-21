@@ -32,20 +32,11 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 
     #| Connect to server and authenticate as a valid user
     method ensure-authenticated-session(Str $server, Str $universe) {
-        my $decoded = self.decode-server($server);
-
-        # Try to connect, bailing out if unable to do so
-        unless my $session = TRY({ self.connect($decoded<url> // $decoded<server>, $universe) }) {
-            $.T.shutdown-screen;
-            self.exit-with-errors("Unable to connect to MUGS server '$decoded<server>':", [$!]);
-        }
-
-        my $username  = $decoded<username>
-                     || $.config.value('Servers', $decoded<server>, 'user');
-        my $password  = $.config.value('Servers', $decoded<server>, 'pass') // '';
+        my $decoded = self.decode-and-connect($server, $universe);
+        my ($username, $password) = self.initial-userpass($decoded);
 
         # XXXX: Should allow player to correct errors and retry or exit
-        await $session.authenticate(:$username, :$password);
+        await $.session.authenticate(:$username, :$password);
     }
 
     #| Create and initialize a new game UI for a given game type and client
