@@ -19,8 +19,6 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
     has $.root-widget;
     has $.sim-time  = 0e0;
     has $.prev-time = now;
-    has @.update-queue;
-    has Lock::Async $!update-lock .= new;
 
     method game-type() { 'pfx' }
 
@@ -207,15 +205,17 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
     method render-updates() {
         # Determine interpolation window (slightly in past)
         my ($update0, $update1);
-        $!update-lock.protect: {
+        $.client.update-lock.protect: {
+            my $queue := $.client.update-queue;
+
             # Drop updates older than window around current client sim time
-            @!update-queue.shift
-                while @!update-queue.elems > 2
-                   && @!update-queue[1]<validated><game-time> <= $!sim-time;
+            $queue.shift
+                while $queue.elems > 2
+                   && $queue[1]<validated><game-time> <= $!sim-time;
 
             # Use two earliest remaining updates as interpolation bounds
-            $update0 = @!update-queue[0];
-            $update1 = @!update-queue[1];
+            $update0 = $queue[0];
+            $update1 = $queue[1];
         }
 
         # Don't show anything if no data to work with
@@ -255,36 +255,6 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         $!prev-time  = $now;
     }
 
-    method validate-and-save-update($message) {
-        constant %schema = {
-            format         => 'effect-arrays',
-            game-id        => GameID,
-            character-name => Str,
-            update-sent    => Instant(Num),
-            game-time      => Duration(Num),
-            dt             => Duration(Num),
-            effects        => [
-                               {
-                                   type      => Str,
-                                   id        => Int,
-                                   particles => array[num32],
-                               }
-                           ],
-        };
-
-        my $validated = $message.validated-data(%schema);
-        my $delay     = $message.created - $validated<update-sent>;
-
-        # Estimate delivery delay with an EWMA (Exponentially Weighted Moving Average)
-        # my $alpha          = .1e0;
-        # $!delay-estimate //= $delay;
-        # $!delay-estimate   = (1 - $alpha) * $!delay-estimate + $alpha * $delay;
-
-        $!update-lock.protect: {
-            @!update-queue.push: hash(:$message, :$validated);
-        }
-    }
-
     method handle-game-event($message) {
         constant %schema = {
             event => {
@@ -303,7 +273,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
     method handle-server-message($message) {
         given $message.type {
             when 'game-update' {
-                self.validate-and-save-update($message);
+                $.client.validate-and-save-update($message);
             }
             when 'game-event'  {
                 self.handle-game-event($message);
