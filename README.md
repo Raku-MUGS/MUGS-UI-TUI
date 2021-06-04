@@ -64,10 +64,26 @@ MUGS::UI::TUI is a TUI (Terminal UI) app (`mugs-tui`) and a growing set of UI pl
 
 **This early version only contains very limited modules and plugins, is missing significant functionality, and should not be considered "fully released" in the same way that the CLI and WebSimple UIs are.**
 
+ROADMAP
+=======
+
+MUGS is still in its infancy, at the beginning of a long and hopefully very enjoyable journey. There is a [draft roadmap for the first few major releases](https://github.com/Raku-MUGS/MUGS/tree/main/docs/todo/release-roadmap.md) but I don't plan to do it all myself -- I'm looking for contributions of all sorts to help make it a reality.
+
+CONTRIBUTING
+============
+
+Please do! :-)
+
+In all seriousness, check out [the CONTRIBUTING doc](docs/CONTRIBUTING.md) (identical in each repo) for details on how to contribute, as well as [the Coding Standards doc](https://github.com/Raku-MUGS/MUGS/tree/main/docs/design/coding-standards.md) for guidelines/standards/rules that apply to code contributions in particular.
+
+The MUGS project has a matching GitHub org, [Raku-MUGS](https://github.com/Raku-MUGS), where you will find all related repositories and issue trackers, as well as formal meta-discussion.
+
+More informal discussion can be found on IRC in [Libera.Chat #mugs](ircs://irc.libera.chat:6697/mugs).
+
 AUTHOR
 ======
 
-Geoffrey Broadwell <gjb@sonic.net>
+Geoffrey Broadwell <gjb@sonic.net> (japhb on GitHub and Libera.Chat)
 
 COPYRIGHT AND LICENSE
 =====================
