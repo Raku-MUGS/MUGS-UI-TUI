@@ -21,6 +21,8 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
     #| Initialize the overall MUGS client app
     method initialize() {
         callsame;
+
+        PROCESS::<$TERMINAL> //= $.T;
         $.T.initialize-screen;
     }
 
