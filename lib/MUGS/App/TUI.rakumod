@@ -71,6 +71,6 @@ sub GENERATE-USAGE(&main, |capture) is export {
 
 
 #| Play a requested TUI game
-multi MAIN($game-type, |options where $common-args) is export {
-    play-via-local-ui(MUGS::App::TUI, :$game-type, |options)
+multi MAIN($game-type, :$game-id = 0, |options where $common-args) is export {
+    play-via-local-ui(MUGS::App::TUI, :$game-type, :$game-id, |options)
 }
