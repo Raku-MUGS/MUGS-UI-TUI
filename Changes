@@ -1,6 +1,9 @@
 Revision history for MUGS-UI-TUI
 
 0.1.3  *WIP*
+  [Bug Fixes]
+  - Set $*TERMINAL properly in TUI initialization
+
   [Docs]
   - Expanded README, including updated contact info
 
@@ -13,6 +16,9 @@ Revision history for MUGS-UI-TUI
 
   [Testing]
   - Run GitHub test workflow against MUGS-Core/Games HEAD rather than previous release
+
+  [UI/UX]
+  - Allow player to specify game-id as a command line option to join an active game
 
 
 0.1.2  2021-05-13
