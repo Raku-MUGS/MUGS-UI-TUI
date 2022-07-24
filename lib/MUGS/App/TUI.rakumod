@@ -1,6 +1,6 @@
 # ABSTRACT: Core logic to set up and run a TUI game
 
-use Terminal::Print;
+use Terminal::Widgets::Terminal;
 
 use MUGS::Core;
 use MUGS::App::LocalUI;
@@ -13,23 +13,29 @@ use MUGS::UI::TUI;
 
 #| TUI App
 class MUGS::App::TUI is MUGS::App::LocalUI {
-    has Terminal::Print     $.T .= new;
-    has MUGS::UI::TUI::Game $.current-game;
+    has Terminal::Widgets::Terminal:D $.terminal .= new;
 
     method ui-type() { 'TUI' }
+
+    #| Use full screen for games
+    method game-ui-opts() {
+        %( :$.terminal, :w($.terminal.w), :h($.terminal.h), :x(0), :y(0) )
+    }
 
     #| Initialize the overall MUGS client app
     method initialize() {
         callsame;
-
-        PROCESS::<$TERMINAL> //= $.T;
-        $.T.initialize-screen;
+        $.terminal.initialize;
     }
 
     #| Shut down the overall MUGS client app (as cleanly as possible)
     method shutdown() {
         callsame;
-        $.T.shutdown-screen;
+
+        if $.terminal.has-initialized {
+            $.terminal.quit;
+            await $.terminal.has-shutdown;
+        }
     }
 
     #| Connect to server and authenticate as a valid user
@@ -43,12 +49,14 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 
     #| Create and initialize a new game UI for a given game type and client
     method launch-game-ui(Str:D :$game-type, MUGS::Client::Game:D :$client, *%ui-opts) {
-        $!current-game = callsame;
+        $.terminal.set-toplevel(callsame);
     }
 
     #| Start actively playing current game UI
     method play-current-game() {
-        $!current-game.main-loop;
+        $.terminal.current-toplevel.?start-ticker;
+        # XXXX: May need to move this back to ensure-authenticated-session
+        $.terminal.start;
     }
 }
 

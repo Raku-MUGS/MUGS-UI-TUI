@@ -2,8 +2,7 @@
 
 unit module MUGS::UI::TUI:auth<zef:japhb>:ver<0.1.2>;
 
-use Terminal::Print;
-use Terminal::Print::DecodedInput;
+use Terminal::Widgets::Simple;
 
 use MUGS::Core;
 use MUGS::Client;
@@ -11,12 +10,9 @@ use MUGS::UI;
 
 
 # Base class for TUIs
-class Game is MUGS::UI::Game {
-    has $.T             = self.app-ui.T;
-    has $.in            = decoded-input-supply;
+class Game is MUGS::UI::Game is TopLevel {
     has $.ui-controller = Supplier.new;
     has $.ui-control    = $!ui-controller.Supply;
-
 
     method ui-type() { 'TUI' }
 }
