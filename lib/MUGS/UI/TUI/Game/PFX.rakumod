@@ -64,7 +64,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
 
     method CBOR-stats($col, $row, $message) {
         constant %schema = {
-            format         => 'single-array',
+            format         => 'effect-arrays',
             game-id        => GameID,
             character-name => Str,
             update-sent    => Instant(Num),
@@ -73,6 +73,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
             effects        => [
                                {
                                    type      => Str,
+                                   id        => Int,
                                    particles => array[num32],
                                }
                            ],
@@ -99,7 +100,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
 
     method JSON-stats($col, $row, $message) {
         constant %schema = {
-            format         => 'single-array',
+            format         => 'effect-arrays',
             game-id        => GameID,
             character-name => Str,
             update-sent    => DateTime(Str),
@@ -108,6 +109,7 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
             effects        => [
                                {
                                    type      => Str,
+                                   id        => Int,
                                    particles => [ Num ],
                                }
                            ],
