@@ -1,39 +1,31 @@
 # ABSTRACT: Simple TUI for "PFX" particle effect test "game"
 
+use CBOR::Simple;
+use JSON::Fast;
+use Terminal::Print::Pixelated;
+use Terminal::Widgets::Events;
+
 use MUGS::Core;
 use MUGS::Client::Game::PFX;
 use MUGS::UI::TUI;
 use MUGS::Util::StructureValidator;
 
-use CBOR::Simple;
-use JSON::Fast;
-use Terminal::Print::Pixelated;
-
-
-my class Root is Terminal::Print::Widget does Terminal::Print::Pixelated { }
-
 
 #| TUI for PFX particle effect test "game"
-class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
-    has $.grid;
-    has $.root-widget;
+class MUGS::UI::TUI::Game::PFX
+   is MUGS::UI::TUI::Game
+ does Terminal::Print::Pixelated {
     has $.sim-time  = 0e0;
     has $.prev-time = now;
 
     method game-type() { 'pfx' }
-
-    submethod TWEAK() {
-        $!grid        = self.T.current-grid;
-        $!root-widget = Root.new-from-grid($!grid);
-    }
 
     method show-initial-state(::?CLASS:D: Real:D $game-time) {
         # Start simulating at the current game time
         $!sim-time = $game-time;
 
         # Blank the screen and add a stopwatch icon to indicate about to begin
-        $.T.clear-screen;
-        $!grid.print-cell($!grid.w div 2, $!grid.h div 2, '⏱');
+        $.grid.print-cell($.w div 2, $.h div 2, '⏱');
     }
 
     method serialization-stats($col, $row, $type, $bytes, $validate, $struct, $codec) {
@@ -42,22 +34,22 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         my $wire-mbps = 10;
         my $xmit-time = $wire-size * 8 / ($wire-mbps * 1_000_000);
 
-        $!grid.set-span($col, $row,     sprintf('%-12s  %8d', "$type size",
+        $.grid.set-span($col, $row,     sprintf('%-12s  %8d', "$type size",
                                                 $bytes), '');
-        $!grid.set-span($col, $row + 1, sprintf('%-12s  %8d', 'Est. packets',
+        $.grid.set-span($col, $row + 1, sprintf('%-12s  %8d', 'Est. packets',
                                                 $packets), '');
-        $!grid.set-span($col, $row + 2, sprintf('%-12s  %8d', 'Wire size',
+        $.grid.set-span($col, $row + 2, sprintf('%-12s  %8d', 'Wire size',
                                                 $wire-size), '');
-        $!grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms',
+        $.grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms',
                                                 "{$wire-mbps}Mbps time",
                                                 $xmit-time * 1000), '');
-        $!grid.set-span($col, $row + 4, sprintf('%-12s  %6.1fms', 'Valid time',
+        $.grid.set-span($col, $row + 4, sprintf('%-12s  %6.1fms', 'Valid time',
                                                 $validate * 1000), '');
-        $!grid.set-span($col, $row + 5, sprintf('%-12s  %6.1fms', 'Struct time',
+        $.grid.set-span($col, $row + 5, sprintf('%-12s  %6.1fms', 'Struct time',
                                                 $struct * 1000), '');
-        $!grid.set-span($col, $row + 6, sprintf('%-12s  %6.1fms', 'Codec time',
+        $.grid.set-span($col, $row + 6, sprintf('%-12s  %6.1fms', 'Codec time',
                                                 $codec * 1000), '');
-        $!grid.set-span($col, $row + 7, sprintf('%-12s  %6.1fms', 'Total time',
+        $.grid.set-span($col, $row + 7, sprintf('%-12s  %6.1fms', 'Total time',
                                                 ($validate + $struct + $codec
                                                  + $xmit-time) * 1000), '');
     }
@@ -138,26 +130,26 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         my $count       = $validated<effects>[0]<particles>.elems / 7;
         my $clock-skew  = $message.created - $validated<update-sent>;
 
-        $!grid.set-span($col, $row,     sprintf('%-12s  %8d', 'Particles', $count), '');
-        $!grid.set-span($col, $row + 1, sprintf('%-12s  %6.1fm‭s', 'Clock skew',
+        $.grid.set-span($col, $row,     sprintf('%-12s  %8d', 'Particles', $count), '');
+        $.grid.set-span($col, $row + 1, sprintf('%-12s  %6.1fm‭s', 'Clock skew',
                                                 $clock-skew * 1000), '');
-        $!grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fm‭s', 'Render time',
+        $.grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fm‭s', 'Render time',
                                                 $tr * 1000), '');
-        $!grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms', 'Δt',
+        $.grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms', 'Δt',
                                                 $validated<dt> * 1000), '');
-        $!grid.set-span($col, $row + 4, sprintf('%-12s  %8.3f', 'Game time',
+        $.grid.set-span($col, $row + 4, sprintf('%-12s  %8.3f', 'Game time',
                                                 $validated<game-time>), '');
     }
 
     method show-stats($message, $validated, $tr) {
         self.general-stats(0,  0, $message, $validated, $tr);
-        # self.CBOR-stats(   0,  6, $message);
+        self.CBOR-stats(   0,  6, $message);
         # self.JSON-stats(   0, 15, $message);
     }
 
     method render-particles($update0, $update1, num $ratio) {
-        my int $w   = $.grid.w;
-        my int $h   = $.grid.h * 2;  # Using Unicode half-height blocks
+        my int $w   = $.w;
+        my int $h   = $.h * 2;  # Using Unicode half-height blocks
         my int $cx  = $w div 2;
         my int $cy  = $h div 2;
         my num $r   = (min $cx, $cy).Num;
@@ -195,13 +187,13 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
                      || $py < 0 || $py >= $h;
 
                 # Different particle renderers with different performance profiles
-                # $!grid.print-string($px, $py +> 1, '*');
-                # $!grid.change-cell($px, $py +> 1, $!grid.cell('*', ~$color));
+                # $.grid.print-string($px, $py +> 1, '*');
+                # $.grid.change-cell($px, $py +> 1, $.grid.cell('*', ~$color));
                 @colors[$py][$px] = ~$color;
             }
         }
         # Only needed if half-height block "pixels" are being computed
-        $!root-widget.composite-pixels(@colors) if @colors;
+        self.composite-pixels(@colors) if @colors;
     }
 
     method render-updates() {
@@ -242,14 +234,15 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
 
         # Render interpolated frame
         my $t0 = now;
-        $!grid.clear;
+        $.grid.clear;
         self.render-particles($update0<validated>, ($update1 // {})<validated>, $ratio);
         my $tr = now - $t0;
 
         # Show stats
         self.show-stats($update0<message>, $update0<validated>, $tr);
 
-        print $!grid;
+        # Display finished frame
+        self.composite;
 
         # Push sim-time forward by time to end of this render
         my $now      = now;
@@ -283,18 +276,31 @@ class MUGS::UI::TUI::Game::PFX is MUGS::UI::TUI::Game {
         }
     }
 
-    method main-loop(::?CLASS:D:) {
-        react {
-            whenever Supply.interval(1/60) {
-                self.render-updates;
-            }
-            whenever $.in {
-                when 'q' { await $.client.leave; done  }
-                when ' ' { $.client.send-pause-request }
-            }
-            whenever $.ui-control.Channel.Supply {
-                when 'exit' { await $.client.leave; done }
-            }
+    #| Start frame ticker
+    method start-ticker(::?CLASS:D: UInt:D $fps = 60) {
+        # Interval supplies can't run faster than 1ms per tick
+        my $spf = max 0.001, 1 / ($fps || 1000);
+
+        start react whenever Supply.interval($spf) {
+            self.render-updates;
+        }
+    }
+
+    #| Process keypresses
+    multi method handle-event(Terminal::Widgets::Events::KeyboardEvent:D
+                              $event where *.key.defined, AtTarget) {
+        my constant %keymap =
+             Ctrl-C      => 'quit-game',
+            'q'          => 'quit-game',
+            ' '          => 'pause-game',
+            ;
+
+        # Decode special keys; otherwise, just use actual string
+        my $key = $event.keyname;
+
+        with %keymap{$key} {
+            when 'quit-game'  { await $.client.leave; $.terminal.quit }
+            when 'pause-game' { $.client.send-pause-request }
         }
     }
 }
