@@ -8,7 +8,7 @@ use MUGS::UI::TUI;
 
 
 # Use subcommand MAIN args
-%PROCESS::SUB-MAIN-OPTS = :named-anywhere;
+PROCESS::<%SUB-MAIN-OPTS> := :named-anywhere;
 
 
 #| TUI App
