@@ -1,4 +1,5 @@
 #!/usr/bin/env raku
 use v6.d;
-BEGIN put 'Loading MUGS.' if $*OUT.t;
+BEGIN print(PROCESS::<$BOOTSTRAP_MESSAGE> = 'Loading MUGS.')
+    unless @*ARGS.grep('-?'|'--help');
 use MUGS::App::TUI;
