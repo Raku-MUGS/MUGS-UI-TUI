@@ -1,6 +1,7 @@
 # ABSTRACT: Core logic to set up and run a TUI game
 
 use Terminal::Widgets::Terminal;
+use Terminal::Widgets::TerminalCapabilities;
 
 use MUGS::Core;
 use MUGS::App::LocalUI;
@@ -13,7 +14,10 @@ PROCESS::<%SUB-MAIN-OPTS> := :named-anywhere;
 
 #| TUI App
 class MUGS::App::TUI is MUGS::App::LocalUI {
-    has Terminal::Widgets::Terminal:D $.terminal .= new;
+    has Str:D  $.symbols     = 'Full';
+    has Bool:D $.vt100-boxes = True;
+
+    has Terminal::Widgets::Terminal $.terminal;
 
     method ui-type() { 'TUI' }
 
@@ -24,8 +28,24 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 
     #| Initialize the overall MUGS client app
     method initialize() {
+        # Make sure we see diagnostics immediately, even if $*ERR is redirected to a file
+        $*ERR.out-buffer = False;
+
+        # Do base LocalUI initialization
         callsame;
-        $.terminal.initialize;
+
+        # About to switch to alternate screen, cleanup boot messages
+        if PROCESS::<$BOOTSTRAP_MESSAGE> -> $message {
+            my $chars = $message.chars;
+            print "\b" x $chars ~ ' ' x $chars ~ "\b" x $chars;
+        }
+
+        # Initialize terminal with requested capabilities and switch to alternate screen
+        my $symbol-set = symbol-set($.symbols);
+        my $caps       = Terminal::Widgets::TerminalCapabilities.new(:$symbol-set,
+                                                                     :$.vt100-boxes);
+        $!terminal = Terminal::Widgets::Terminal.new(:$caps);
+        $!terminal.initialize;
     }
 
     #| Shut down the overall MUGS client app (as cleanly as possible)
@@ -62,7 +82,8 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 
 
 #| Common options that work for all subcommands
-my $common-args = :(Str :$server, Str :$universe, Bool :$debug);
+my $common-args = :(Str :$server, Str :$universe, Str :$symbols,
+                    Bool :$vt100-boxes, Bool :$debug);
 
 #| Add description of common arguments/options to standard USAGE
 sub GENERATE-USAGE(&main, |capture) is export {
@@ -73,7 +94,20 @@ sub GENERATE-USAGE(&main, |capture) is export {
         Common options for all commands:
           --server=<Str>    Specify an external server (defaults to internal)
           --universe=<Str>  Specify a local universe (internal server only)
+          --symbols=<Str>   Set terminal/font symbol set (defaults to full)
+          --vt100-boxes     Enable use of VT100 box drawing symbols
           --debug           Enable debug output
+
+        Known symbol sets:
+          ascii    7-bit ASCII printables only (most compatible)
+          latin1   Latin-1 / ISO-8859-1
+          cp1252   CP1252 / Windows-1252
+          w1g      W1G-compatible subset of WGL4
+          wgl4     Full WGL4 / Windows Glyph List 4
+          mes2     MES-2 / Multilingual European Subset No. 2
+          uni1     Unicode 1.1
+          uni7     Unicode 7.0 + Emoji 0.7
+          full     Full modern Unicode support (most features)
         OPTIONS
 }
 
