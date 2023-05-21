@@ -272,7 +272,8 @@ class MainMenu
                     .static-text(id => 'logo', text => $.logo-text),
                     .simple-menu(id => 'menu', :@.items, :&process-input),
                     # XXXX: Should be dynamic text?
-                    .static-text(id => 'hint', style => %( min-h => $hint-lines, )),
+                    .static-text(id => 'hint', style => %( min-h => $hint-lines,
+                                                           :minimize-h )),
                    )
         }
     }
