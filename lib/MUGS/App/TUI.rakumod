@@ -4,6 +4,7 @@ use Terminal::Widgets::Terminal;
 use Terminal::Widgets::TerminalCapabilities;
 
 use MUGS::Core;
+use MUGS::App::TUI::MainMenu;
 use MUGS::App::LocalUI;
 use MUGS::UI::TUI;
 
@@ -81,6 +82,30 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 }
 
 
+#| Boot TUI and jump directly to main menu
+sub main-menu(Bool :$debug, *%ui-options) {
+    # Set up local app UI; should exit with message on error
+    my $*DEBUG = $debug // ?%*ENV<MUGS_DEBUG>;
+    my $app-ui = MUGS::App::TUI.new(|%ui-options);
+    $app-ui.initialize;
+
+    # Draw main menu
+    # draw-main-menu($app-ui);
+    my $term    = $app-ui.terminal;
+    my $menu-ui = MainMenu.new(:w($term.w), :h($term.h), :x(0), :y(0),
+                               :terminal($term), :title('Main Menu | MUGS'));
+    $menu-ui.build-layout;
+    $term.set-toplevel($menu-ui);
+
+    # Start the terminal event reactor (and thus interaction with the menu);
+    # when this exits, the user has quit the MUGS TUI.
+    $app-ui.terminal.start;
+
+    # Clean up
+    $app-ui.shutdown;
+}
+
+
 #| Common options that work for all subcommands
 my $common-args = :(Str :$server, Str :$universe, Str :$symbols,
                     Bool :$vt100-boxes, Bool :$debug);
@@ -109,6 +134,12 @@ sub GENERATE-USAGE(&main, |capture) is export {
           uni7     Unicode 7.0 + Emoji 0.7
           full     Full modern Unicode support (most features)
         OPTIONS
+}
+
+
+#| Show the main MUGS TUI menu
+multi MAIN(|options where $common-args) is export {
+    main-menu(|options)
 }
 
 
