@@ -288,6 +288,7 @@ class MainMenu
                                            style => %( :minimize-h, )),
                               .node(),
                               .simple-menu(id => 'menu', :@.items, :&process-input,
+                                           color => %( focused => '', ),
                                            style => %( :minimize-h, )),
                               .node(),
                              ),
