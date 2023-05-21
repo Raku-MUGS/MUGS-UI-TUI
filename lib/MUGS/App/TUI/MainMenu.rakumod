@@ -316,9 +316,6 @@ class MainMenu
         self.build-children($layout-root, self);
         self.recalc-coord-offsets(0, 0, 0);
 
-        # Let Terminal::Print know this will be a new screen
-        $*TERMINAL.add-grid($.grid-name, :new-grid($.grid));
-
         # Pull subwidgets out of generated widget tree
         $!logo = %.by-id<logo>;
         $!menu = %.by-id<menu>;
@@ -326,11 +323,6 @@ class MainMenu
 
         # Focus on the actual active menu
         self.focus-on($!menu, :!redraw);
-
-        # Composite subwidgets into main menu UI
-        my $fi = Terminal::Widgets::FrameInfo.new;
-        self.do-frame($fi);
-        self.composite;
     }
 
     #| Process menu selections
