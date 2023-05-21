@@ -102,53 +102,16 @@ sub main-menu-items() is export {
 }
 
 
-class StaticText is Terminal::Widgets::Widget {
-    has $.text;
-    has $.color = '';
-
-    method set-text($!text) {
-        self.clear-frame;
-        self.draw-frame;
-        self.composite(:print);
-    }
-
-    method draw-frame() {
-        my @lines = $.text.lines;
-        for @lines.kv -> $y, $line {
-            $.grid.set-span(0, $y, $line, $.color);
-        }
-    }
-}
-
-
-# Typed Layout Widgets
-class STLayout is Terminal::Widgets::Layout::Leaf {
-    method default-styles(:$text = '') {
-        %( min-h => $text.lines.elems,
-           min-w => max 0, $text.lines.map(&duospace-width).max )
-    }
-}
-
-
-#| Subclass of Terminal::Widgets::Layout::Builder that recognizes new node types
-class LayoutBuilder is Terminal::Widgets::Layout::Builder {
-    my constant Style = Terminal::Widgets::Layout::Style;
-    method static-text(*@children, :$vertical, :%style, *%extra) {
-        my $default    = STLayout.default-styles(|%extra);
-        STLayout.new:  :@children, :$vertical, :%extra,
-                       requested => Style.new(|$default, |%style) }
-}
-
-
 #| A main menu screen with logo, menu items, and hint bar
 class MainMenu
    is Terminal::Widgets::StandardWidgetBuilder
  does Terminal::Widgets::TopLevel {
-    has Str:D      $.grid-name = 'main-menu';
-    has            $.items     =  main-menu-items;
-    has            $.logo-text =  mugs-logo(self.terminal.caps);
-    has StaticText $.logo;
-    has StaticText $.hint;
+    has Str:D $.grid-name = 'main-menu';
+    has       $.items     =  main-menu-items;
+    has       $.logo-text =  mugs-logo(self.terminal.caps);
+
+    has Terminal::Widgets::PlainText   $.logo;
+    has Terminal::Widgets::PlainText   $.hint;
     has Terminal::Widgets::Input::Menu $.menu;
 
     #| Compute maximum dimensions of hints
@@ -166,7 +129,7 @@ class MainMenu
         my ($hint-w, $hint-h) = self.hint-max;
         my &process-input = { self.process-selection($_) }
 
-        do with LayoutBuilder.new {
+        do with Terminal::Widgets::Layout::Builder.new {
             .widget(:vertical, style => %( max-w => $.w, max-h => $.h ),
                     # Centered horizontally
                     .node(
@@ -174,8 +137,8 @@ class MainMenu
                         # Same width, with spaces around if possible
                         .node(:vertical, style => %( :minimize-w, ),
                               .node(),
-                              .static-text(id => 'logo', text => $.logo-text,
-                                           style => %( :minimize-h, )),
+                              .plain-text(id => 'logo', text => $.logo-text,
+                                          style => %( :minimize-h, )),
                               .node(),
                               .menu(id => 'menu', :@.items, :&process-input,
                                     color => %( focused => '', ),
@@ -185,10 +148,10 @@ class MainMenu
                         .node(),
                     ),
                     # Full width, minimum height
-                    .static-text(id => 'hint', color => 'italic',
-                                 style => %( min-w => $hint-w,
-                                             min-h => $hint-h,
-                                             :minimize-h )),
+                    .plain-text(id => 'hint', color => 'italic',
+                                style => %( min-w => $hint-w,
+                                            min-h => $hint-h,
+                                            :minimize-h )),
                    )
         }
     }
@@ -202,18 +165,6 @@ class MainMenu
         $.hint.layout.update-requested(:$min-w, :$min-h);
 
         $.layout
-    }
-
-    #| Build a widget for an individual layout node
-    method build-node($node, $geometry) {
-        # First try custom widget types, then fall back to standard library
-        do given $node {
-            # XXXX: Default class and build code for known layout node types?
-            when STLayout {
-                StaticText.new(|$geometry, |.extra)
-            }
-            default { Nil }
-        } // callsame()
     }
 
     #| Lay out main menu UI subwidgets
