@@ -335,7 +335,7 @@ class MainMenu
         self.set-layout($layout-root);
 
         # Debug: describe computed layout
-        # note $layout-root.gist;
+        note $layout-root.gist if $*DEBUG;
 
         # Actually build widgets and recalculate coordinate offsets recursively
         self.build-children($layout-root, self);
