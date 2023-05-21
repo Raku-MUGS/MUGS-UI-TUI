@@ -273,16 +273,29 @@ class MainMenu
 
     #| Define the initial layout constraints
     method layout-model() {
-        # Wrap each hint and ensure enough room to display any of them
-        my $hint-lines = @.items.map({ text-wrap($.w, .<hint>).elems }).max;
+        my ($hint-w, $hint-h) = self.hint-max;
         my &process-input = { self.process-selection($_) }
 
         do with LayoutBuilder.new {
             .widget(:vertical, style => %( max-w => $.w, max-h => $.h ),
-                    .static-text(id => 'logo', text => $.logo-text),
-                    .simple-menu(id => 'menu', :@.items, :&process-input),
-                    # XXXX: Should be dynamic text?
-                    .static-text(id => 'hint', style => %( min-h => $hint-lines,
+                    # Centered horizontally
+                    .node(
+                        .node(),
+                        # Same width, with spaces around if possible
+                        .node(:vertical, style => %( :minimize-w, ),
+                              .node(),
+                              .static-text(id => 'logo', text => $.logo-text,
+                                           style => %( :minimize-h, )),
+                              .node(),
+                              .simple-menu(id => 'menu', :@.items, :&process-input,
+                                           style => %( :minimize-h, )),
+                              .node(),
+                             ),
+                        .node(),
+                    ),
+                    # Full width, minimum height
+                    .static-text(id => 'hint', style => %( min-w => $hint-w,
+                                                           min-h => $hint-h,
                                                            :minimize-h )),
                    )
         }
