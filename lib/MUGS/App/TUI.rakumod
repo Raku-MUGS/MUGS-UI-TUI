@@ -90,7 +90,6 @@ sub main-menu(Bool :$debug, *%ui-options) {
     $app-ui.initialize;
 
     # Draw main menu
-    # draw-main-menu($app-ui);
     my $term    = $app-ui.terminal;
     my $menu-ui = MainMenu.new(:w($term.w), :h($term.h), :x(0), :y(0),
                                :terminal($term), :title('Main Menu | MUGS'));

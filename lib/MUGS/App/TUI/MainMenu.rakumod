@@ -319,6 +319,7 @@ class MainMenu
     method build-node($node, $geometry) {
         # First try custom widget types, then fall back to standard library
         do given $node {
+            # XXXX: Default class and build code for known layout node types?
             when STLayout {
                 StaticText.new(|$geometry, |.extra)
             }
