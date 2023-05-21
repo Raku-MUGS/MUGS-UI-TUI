@@ -104,6 +104,7 @@ sub main-menu-items() is export {
 
 class StaticText is Terminal::Widgets::Widget {
     has $.text;
+    has $.color = '';
 
     method set-text($!text) {
         self.clear-frame;
@@ -114,7 +115,7 @@ class StaticText is Terminal::Widgets::Widget {
     method draw-frame() {
         my @lines = $.text.lines;
         for @lines.kv -> $y, $line {
-            $.grid.set-span(0, $y, $line, '');
+            $.grid.set-span(0, $y, $line, $.color);
         }
     }
 }
@@ -295,9 +296,10 @@ class MainMenu
                         .node(),
                     ),
                     # Full width, minimum height
-                    .static-text(id => 'hint', style => %( min-w => $hint-w,
-                                                           min-h => $hint-h,
-                                                           :minimize-h )),
+                    .static-text(id => 'hint', color => 'italic',
+                                 style => %( min-w => $hint-w,
+                                             min-h => $hint-h,
+                                             :minimize-h )),
                    )
         }
     }
