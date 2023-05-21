@@ -140,7 +140,7 @@ class SimpleMenu does Terminal::Widgets::Input {
         $.grid.clear;
         for @.items.kv -> $i, $item {
             my $title     = $item<title>;
-            my $extra     = max 1, $.w - 2 - duospace-width($title);
+            my $extra     = max 1, $.w - 1 - duospace-width($title);
             my $formatted = " $title" ~ ' ' x $extra;
             my $color     = $i == $!selected ?? %.color<highlight> !! $base-color;
             $.grid.set-span(0, $i, $formatted, $color);
