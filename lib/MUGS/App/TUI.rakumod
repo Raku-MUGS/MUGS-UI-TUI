@@ -94,7 +94,6 @@ sub main-menu(Bool :$debug, *%ui-options) {
     my $term    = $app-ui.terminal;
     my $menu-ui = MainMenu.new(:w($term.w), :h($term.h), :x(0), :y(0),
                                :terminal($term), :title('Main Menu | MUGS'));
-    $menu-ui.build-layout;
     $term.set-toplevel($menu-ui);
 
     # Start the terminal event reactor (and thus interaction with the menu);
