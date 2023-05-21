@@ -261,6 +261,16 @@ class MainMenu
     has SimpleMenu $.menu;
     has StaticText $.hint;
 
+    #| Compute maximum dimensions of hints
+    method hint-max() {
+        # Wrap each hint and ensure enough room to display any of them
+        my @wrapped    = @.items.map({ text-wrap($.w, .<hint>) });
+        my $hint-lines = @wrapped.map(*.elems).max;
+        my $hint-width = @wrapped.map(*.map(&duospace-width)).flat.max;
+
+        ($hint-width, $hint-lines)
+    }
+
     #| Define the initial layout constraints
     method layout-model() {
         # Wrap each hint and ensure enough room to display any of them
@@ -283,8 +293,8 @@ class MainMenu
         $.layout.update-requested(:max-w($.w), :max-h($.h));
 
         # Rewrap hints and ensure enough room to display them
-        my $hint-lines = @.items.map({ text-wrap($.w, .<hint>).elems }).max;
-        $.hint.layout.update-requested(:min-h($hint-lines));
+        my ($min-w, $min-h) = self.hint-max;
+        $.hint.layout.update-requested(:$min-w, :$min-h);
 
         $.layout
     }
