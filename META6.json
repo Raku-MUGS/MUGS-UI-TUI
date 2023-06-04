@@ -17,6 +17,7 @@
   "perl": "6.d",
   "provides": {
     "MUGS::App::TUI": "lib/MUGS/App/TUI.rakumod",
+    "MUGS::App::TUI::MainMenu": "lib/MUGS/App/TUI/MainMenu.rakumod",
     "MUGS::UI::TUI": "lib/MUGS/UI/TUI.rakumod",
     "MUGS::UI::TUI::Game::PFX": "lib/MUGS/UI/TUI/Game/PFX.rakumod"
   },
