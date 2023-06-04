@@ -1,8 +1,11 @@
 Revision history for MUGS-UI-TUI
 
-0.1.3  *WIP*
+{{$NEXT}}
   [Bug Fixes]
   - Set $*TERMINAL properly in TUI initialization
+  - Fix out of date message stats schemas
+  - Work around Rakudo change in PROCESS dynamics
+  - Use existing DEBUG global
 
   [Docs]
   - Expanded README, including updated contact info
@@ -10,15 +13,24 @@ Revision history for MUGS-UI-TUI
   [Games]
   - Completely redesign PFX smoothing, using interpolation rather than extrapolation
 
+  [Packaging]
+  - Update dependencies on Terminal::Print and Terminal::Widgets
+
   [Refactoring]
   - Switch to client.validate-and-save-update in PFX UI
   - Make use of newer LocalUI APIs to shrink ensure-authenticated-session considerably
+  - Switch over to Terminal::Widgets classes and APIs
+  - Remove redundant layout and setup code
 
   [Testing]
   - Run GitHub test workflow against MUGS-Core/Games HEAD rather than previous release
 
   [UI/UX]
   - Allow player to specify game-id as a command line option to join an active game
+  - Update mugs-tui bootstrap message to current idiom
+  - Update UI init to handle terminal capabilities and current idioms
+  - Create initial MainMenu with capabilities-sensitive logo, hotkeys, and
+    live hints, based on T::W::I::Menu
 
 
 0.1.2  2021-05-13
