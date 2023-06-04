@@ -1,6 +1,8 @@
 Revision history for MUGS-UI-TUI
 
 {{$NEXT}}
+
+0.1.3  2023-06-04T12:52:45-07:00
   [Bug Fixes]
   - Set $*TERMINAL properly in TUI initialization
   - Fix out of date message stats schemas
