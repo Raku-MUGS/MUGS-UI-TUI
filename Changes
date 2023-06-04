@@ -9,6 +9,7 @@ Revision history for MUGS-UI-TUI
 
   [Docs]
   - Expanded README, including updated contact info
+  - Add several design and speculative docs
 
   [Games]
   - Completely redesign PFX smoothing, using interpolation rather than extrapolation
