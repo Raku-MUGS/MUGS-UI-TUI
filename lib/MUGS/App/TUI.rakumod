@@ -89,10 +89,8 @@ sub main-menu(Bool :$debug, *%ui-options) {
     $app-ui.initialize;
 
     # Draw main menu
-    my $term    = $app-ui.terminal;
-    my $menu-ui = MainMenu.new(:w($term.w), :h($term.h), :x(0), :y(0),
-                               :terminal($term), :title('Main Menu | MUGS'));
-    $term.set-toplevel($menu-ui);
+    my $menu-ui = MainMenu.new(|$app-ui.game-ui-opts, :title('Main Menu | MUGS'));
+    $app-ui.terminal.set-toplevel($menu-ui);
 
     # Start the terminal event reactor (and thus interaction with the menu);
     # when this exits, the user has quit the MUGS TUI.
