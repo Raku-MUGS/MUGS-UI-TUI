@@ -8,8 +8,8 @@
   "depends": [
     "MUGS::Core:ver<0.1.3>",
     "MUGS::Games:ver<0.1.3>",
-    "Terminal::Print:auth<zef:terminal-printers>:ver<0.973>",
-    "Terminal::Widgets:auth<zef:japhb>:ver<0.0.5>"
+    "Terminal::Print:auth<zef:terminal-printers>:ver<0.975>",
+    "Terminal::Widgets:auth<zef:japhb>:ver<0.0.7>"
   ],
   "description": "Fullscreen Terminal UI for MUGS, including App and game UIs",
   "license": "Artistic-2.0",
