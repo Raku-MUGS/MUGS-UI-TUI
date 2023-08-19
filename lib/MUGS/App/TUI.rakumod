@@ -1,7 +1,7 @@
 # ABSTRACT: Core logic to set up and run a TUI game
 
+use Terminal::Capabilities;
 use Terminal::Widgets::Terminal;
-use Terminal::Widgets::TerminalCapabilities;
 
 use MUGS::Core;
 use MUGS::App::TUI::MainMenu;
@@ -43,9 +43,8 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
 
         # Initialize terminal with requested capabilities and switch to alternate screen
         my $symbol-set = symbol-set($.symbols);
-        my $caps       = Terminal::Widgets::TerminalCapabilities.new(:$symbol-set,
-                                                                     :$.vt100-boxes);
-        $!terminal = Terminal::Widgets::Terminal.new(:$caps);
+        my $caps       = Terminal::Capabilities.new(:$symbol-set, :$.vt100-boxes);
+        $!terminal     = Terminal::Widgets::Terminal.new(:$caps);
         $!terminal.initialize;
     }
 

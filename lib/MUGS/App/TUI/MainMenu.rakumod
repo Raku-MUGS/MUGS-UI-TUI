@@ -1,16 +1,16 @@
 # ABSTRACT: Main Menu UI
 
 use Text::MiscUtils::Layout;
+use Terminal::Capabilities;
 
 use Terminal::Widgets::Events;
 use Terminal::Widgets::Widget;
 use Terminal::Widgets::Layout;
 use Terminal::Widgets::TopLevel;
-use Terminal::Widgets::TerminalCapabilities;
 use Terminal::Widgets::StandardWidgetBuilder;
 
 
-sub mugs-logo(Terminal::Widgets::TerminalCapabilities:D $caps) is export {
+sub mugs-logo(Terminal::Capabilities:D $caps) is export {
     constant $ASCII = q:to/ASCII/;
          __  __ _   _  ____ ____
         |  \/  | | | |/ ___/ ___|
