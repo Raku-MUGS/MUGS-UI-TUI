@@ -2,6 +2,7 @@
 
 use Terminal::Capabilities;
 use Terminal::Widgets::Terminal;
+use Terminal::Widgets::Simple::App;
 
 use MUGS::Core;
 use MUGS::App::TUI::MainMenu;
@@ -14,7 +15,8 @@ PROCESS::<%SUB-MAIN-OPTS> := :named-anywhere;
 
 
 #| TUI App
-class MUGS::App::TUI is MUGS::App::LocalUI {
+class MUGS::App::TUI is MUGS::App::LocalUI
+   is Terminal::Widgets::Simple::App {
     has Str:D  $.symbols     = 'Full';
     has Bool:D $.vt100-boxes = True;
 
@@ -27,25 +29,16 @@ class MUGS::App::TUI is MUGS::App::LocalUI {
         %( :$.terminal, :w($.terminal.w), :h($.terminal.h), :x(0), :y(0) )
     }
 
-    #| Initialize the overall MUGS client app
+    #| Initialize the terminal and overall MUGS client app
     method initialize() {
-        # Make sure we see diagnostics immediately, even if $*ERR is redirected to a file
-        $*ERR.out-buffer = False;
-
-        # Do base LocalUI initialization
-        callsame;
-
-        # About to switch to alternate screen, cleanup boot messages
-        if PROCESS::<$BOOTSTRAP_MESSAGE> -> $message {
-            my $chars = $message.chars;
-            print "\b" x $chars ~ ' ' x $chars ~ "\b" x $chars;
-        }
-
-        # Initialize terminal with requested capabilities and switch to alternate screen
-        my $symbol-set = symbol-set($.symbols);
-        my $caps       = Terminal::Capabilities.new(:$symbol-set, :$.vt100-boxes);
-        $!terminal     = Terminal::Widgets::Terminal.new(:$caps);
+        self.bootup;
         $!terminal.initialize;
+    }
+
+    #| Basic boot-time (before alternate screen switch) initialization
+    method boot-init() {
+        self.MUGS::App::LocalUI::initialize;
+        $!terminal = self.add-terminal(:$.symbols, :$.vt100-boxes);
     }
 
     #| Shut down the overall MUGS client app (as cleanly as possible)
