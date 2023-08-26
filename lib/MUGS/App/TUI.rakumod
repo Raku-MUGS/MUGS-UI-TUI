@@ -4,6 +4,10 @@ use Terminal::Capabilities;
 use Terminal::Widgets::Terminal;
 use Terminal::Widgets::Simple::App;
 
+use Text::MiscUtils::Layout;
+use Terminal::Widgets::Widget;
+use Terminal::Widgets::Progress::Tracker;
+
 use MUGS::Core;
 use MUGS::App::TUI::MainMenu;
 use MUGS::App::LocalUI;
@@ -12,6 +16,46 @@ use MUGS::UI::TUI;
 
 # Use subcommand MAIN args
 PROCESS::<%SUB-MAIN-OPTS> := :named-anywhere;
+
+
+#| A left-to-right colored progress bar
+class ProgressBar is Terminal::Widgets::Widget
+ does Terminal::Widgets::Progress::Tracker {
+    has $.terminal   is required;
+    has $.completed  = 'blue';
+    has $.remaining  = 'red';
+    has $.text-color = 'white';
+    has $.text       = '';
+
+    #| Initialize the progress bar beyond simply setting attributes
+    submethod TWEAK() {
+        # Render initial text
+        my @lines = $!text.lines;
+        my $top = (self.h - @lines) div 2;
+        for @lines.kv -> $i, $line {
+            self.grid.set-span-text((self.w - duospace-width($line)) div 2,
+                                    $top + $i, $line);
+        }
+
+        self.Terminal::Widgets::Progress::Tracker::TWEAK;
+    }
+
+    #| Make sure current progress level is sane and update the screen
+    method !update-progress($p) {
+        my $t0 = now;
+
+        # Compute length of completed portion of bar
+        $!progress    = 0 max ($!max min $p);
+        my $completed = floor $.w * $!progress / $!max;
+
+        # Loop over bar thickness (height) setting color spans
+        $.grid.set-span-color(0, $completed - 1,   $_, "$!text-color on_$!completed") for ^$.h;
+        $.grid.set-span-color($completed, $.w - 1, $_, "$!text-color on_$!remaining") for ^$.h;
+
+        # Update screen immediately
+        self.composite(:print);
+    }
+}
 
 
 #| TUI App
