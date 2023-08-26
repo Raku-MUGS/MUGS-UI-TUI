@@ -162,13 +162,21 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
 #| Boot TUI and jump directly to main menu
 sub main-menu(Bool :$debug, *%ui-options) {
-    # Set up local app UI; should exit with message on error
+    # Configure debugging and create app-ui object
     my $*DEBUG = $debug // ?%*ENV<MUGS_DEBUG>;
     my $app-ui = MUGS::App::TUI.new(|%ui-options);
-    $app-ui.initialize;
 
-    # Draw main menu
-    my $menu-ui = MainMenu.new(|$app-ui.game-ui-opts, :title('Main Menu | MUGS'));
+    # Prepare to build main menu offscreen, during app-ui init
+    my $menu-ui;
+    my sub make-main-menu() {
+        $menu-ui = MainMenu.new(|$app-ui.game-ui-opts, :title('Main Menu | MUGS'));
+        $menu-ui.build-layout;
+    }
+
+    # Actually initialize app UI; should exit with message on error
+    $app-ui.initialize(&make-main-menu);
+
+    # Set main menu as new toplevel, triggering draw and compose
     $app-ui.terminal.set-toplevel($menu-ui);
 
     # Start the terminal event reactor (and thus interaction with the menu);
