@@ -74,15 +74,57 @@ class MUGS::App::TUI is MUGS::App::LocalUI
     }
 
     #| Initialize the terminal and overall MUGS client app
-    method initialize() {
+    method initialize(*@loading-tasks) {
         self.bootup;
         $!terminal.initialize;
+        self.loading-screen($!terminal, @loading-tasks);
     }
 
     #| Basic boot-time (before alternate screen switch) initialization
     method boot-init() {
         self.MUGS::App::LocalUI::initialize;
         $!terminal = self.add-terminal(:$.symbols, :$.vt100-boxes);
+    }
+
+    #| Make a simple progress bar for the loading screen
+    method make-progress-tracker($terminal) {
+        # Smallish centered bar, 3/4 of the way down the screen
+        my $w = $terminal.w min 50;
+        my $h = 1;
+        my $x = ($terminal.w - $w) div 2;
+        my $y = floor $terminal.h * .75;
+
+        ProgressBar.new(:$terminal, :$w, :$h, :$x, :$y);
+    }
+
+    #| Load plugins in loading screen, tracking progress
+    method loading-promises($tracker, @loading-tasks) {
+        my $tasks = 3 + @loading-tasks;
+        my \Δ     = ($tracker.max - $tracker.progress) / $tasks;
+
+        start {
+            # Just getting to this point is part of "loading", both in reality
+            # because of the overhead of `use` statements and more importantly
+            # *from the point of view of the user* because we must have been
+            # doing *something* for the last few hundred milliseconds, so
+            # acknowledge that by bumping the progress tracker even before
+            # doing explicit side-thread plugin loads.  Otherwise to the user
+            # it feels like the program is starting over from scratch and
+            # hasn't actually done anything useful so far.
+
+            $tracker.add-progress(Δ);
+
+            self.load-client-plugins;
+            $tracker.add-progress(Δ);
+
+            self.load-ui-plugins;
+            $tracker.add-progress(Δ);
+
+            for @loading-tasks {
+                $_();
+                $tracker.add-progress(Δ);
+            }
+        }
     }
 
     #| Shut down the overall MUGS client app (as cleanly as possible)
