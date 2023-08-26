@@ -2,4 +2,5 @@
 use v6.d;
 BEGIN print(PROCESS::<$BOOTSTRAP_MESSAGE> = 'Loading and optimizing MUGS.')
     unless @*ARGS.grep('-?'|'--help');
+BEGIN PROCESS::<$BM_INSTANT> = now;
 use MUGS::App::TUI;
