@@ -141,6 +141,7 @@ class MainMenu
                                           style => %( :minimize-h, )),
                               .node(),
                               .menu(id => 'menu', :@.items, :&process-input,
+                                    hint-target => 'hint',
                                     color => %( focused => '', ),
                                     style => %( :minimize-h, )),
                               .node(),
