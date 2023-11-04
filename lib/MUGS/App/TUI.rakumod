@@ -61,8 +61,9 @@ class ProgressBar is Terminal::Widgets::Widget
 #| TUI App
 class MUGS::App::TUI is MUGS::App::LocalUI
    is Terminal::Widgets::Simple::App {
-    has Str:D  $.symbols     = 'Full';
-    has Bool:D $.vt100-boxes = True;
+    has Str  $.symbols;      #= Terminal/font symbol set
+    has Bool $.vt100-boxes;  #= Enable VT100 box drawing symbols
+    # XXXX: What about color override?
 
     has Terminal::Widgets::Terminal $.terminal;
 
@@ -83,7 +84,10 @@ class MUGS::App::TUI is MUGS::App::LocalUI
     #| Basic boot-time (before alternate screen switch) initialization
     method boot-init() {
         self.MUGS::App::LocalUI::initialize;
-        $!terminal = self.add-terminal(:$.symbols, :$.vt100-boxes);
+
+        $!symbols     //= $.config.value('UI', 'TUI', 'symbols');
+        $!vt100-boxes //= $.config.value('UI', 'TUI', 'vt100-boxes');
+        $!terminal      = self.add-terminal(:$.symbols, :$.vt100-boxes);
     }
 
     #| Make a simple progress bar for the loading screen
