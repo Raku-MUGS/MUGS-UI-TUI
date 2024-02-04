@@ -8,6 +8,7 @@
   "depends": [
     "MUGS::Core:ver<0.1.3>",
     "MUGS::Games:ver<0.1.3>",
+    "Terminal::Capabilities:auth<zef:japhb>:ver<0.0.3>",
     "Terminal::Print:auth<zef:terminal-printers>:ver<0.976>",
     "Terminal::Widgets:auth<zef:japhb>:ver<0.0.8>"
   ],
