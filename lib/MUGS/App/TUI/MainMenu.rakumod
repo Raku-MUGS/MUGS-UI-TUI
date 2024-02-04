@@ -1,17 +1,10 @@
 # ABSTRACT: Main Menu UI
 
-use Text::MiscUtils::Layout;
-use Terminal::Capabilities;
-
-use Terminal::Widgets::Events;
-use Terminal::Widgets::Widget;
-use Terminal::Widgets::Layout;
-use Terminal::Widgets::TopLevel;
-use Terminal::Widgets::StandardWidgetBuilder;
-
+use MUGS::UI::TUI::Layout::CenteredMenu;
 use MUGS::UI::TUI::Logo;
 
-sub main-menu-items() is export {
+
+sub main-menu-items() {
     my constant @menu =
         {
             id      => 'network',
@@ -46,93 +39,20 @@ sub main-menu-items() is export {
 }
 
 
-#| A main menu screen with logo, menu items, and hint bar
-class MainMenu
-   is Terminal::Widgets::StandardWidgetBuilder
- does Terminal::Widgets::TopLevel {
+#| Main menu with logo above menu items
+class MainMenu is MUGS::UI::TUI::Layout::CenteredMenu {
     has Str:D $.grid-name = 'main-menu';
     has       $.items     =  main-menu-items;
     has       $.logo-text =  mugs-logo(self.terminal.caps);
 
-    has Terminal::Widgets::PlainText   $.logo;
-    has Terminal::Widgets::PlainText   $.hint;
-    has Terminal::Widgets::Input::Menu $.menu;
-
-    #| Compute maximum dimensions of hints
-    method hint-max() {
-        # Wrap each hint and ensure enough room to display any of them
-        my @wrapped    = @.items.map({ text-wrap($.w, .<hint>) });
-        my $hint-lines = @wrapped.map(*.elems).max;
-        my $hint-width = @wrapped.map(*.map(&duospace-width)).flat.max;
-
-        ($hint-width, $hint-lines)
-    }
-
-    #| Define the initial layout constraints
-    method layout-model() {
-        my ($hint-w, $hint-h) = self.hint-max;
-        my &process-input = { self.process-selection($_) }
-
-        do with Terminal::Widgets::Layout::Builder.new {
-            .widget(:vertical, style => %( max-w => $.w, max-h => $.h ),
-                    # Centered horizontally
-                    .node(
-                        .node(),
-                        # Same width, with spaces around if possible
-                        .node(:vertical, style => %( :minimize-w, ),
-                              .node(),
-                              .plain-text(id => 'logo', text => $.logo-text,
-                                          style => %( :minimize-h, )),
-                              .node(),
-                              .menu(id => 'menu', :@.items, :&process-input,
-                                    hint-target => 'hint',
-                                    color => %( focused => '', ),
-                                    style => %( :minimize-h, )),
-                              .node(),
-                             ),
-                        .node(),
-                    ),
-                    # Full width, minimum height
-                    .plain-text(id => 'hint', color => 'italic',
-                                style => %( min-w => $hint-w,
-                                            min-h => $hint-h,
-                                            :minimize-h )),
-                   )
+    #| Define initial layout for header section of menu page
+    method header-layout($builder, $max-width, $max-height) {
+        # Space above height-minimized logo
+        with $builder {
+            .node(),
+            .plain-text(id => 'logo', text => $.logo-text,
+                        style => %( :minimize-h, ))
         }
-    }
-
-    #| Refresh the layout tree based on updated info
-    method updated-layout-model() {
-        $.layout.update-requested(:max-w($.w), :max-h($.h));
-
-        # Rewrap hints and ensure enough room to display them
-        my ($min-w, $min-h) = self.hint-max;
-        $.hint.layout.update-requested(:$min-w, :$min-h);
-
-        $.layout
-    }
-
-    #| Lay out main menu UI subwidgets
-    method build-layout() {
-        # Build layout dynamically based on layout constraints from layout-model
-        my $is-rebuild  = ?$.layout;
-        my $layout-root = self.compute-layout;
-        self.set-layout($layout-root);
-
-        # Debug: describe computed layout
-        note $layout-root.gist if $*DEBUG;
-
-        # Actually build widgets and recalculate coordinate offsets recursively
-        self.build-children($layout-root, self);
-        self.recalc-coord-offsets(0, 0, 0);
-
-        # Pull subwidgets out of generated widget tree
-        $!logo = %.by-id<logo>;
-        $!menu = %.by-id<menu>;
-        $!hint = %.by-id<hint>;
-
-        # Focus on the actual active menu
-        self.focus-on($!menu, :!redraw);
     }
 
     #| Process menu selections
