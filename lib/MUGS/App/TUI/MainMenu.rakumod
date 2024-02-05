@@ -42,6 +42,7 @@ sub main-menu-items() {
 #| Main menu with logo above menu items
 class MainMenu is MUGS::UI::TUI::Layout::CenteredMenu {
     has Str:D $.grid-name = 'main-menu';
+    has Str:D $.title     = 'Main Menu | MUGS';
     has       $.items     =  main-menu-items;
     has       $.logo-text =  mugs-logo(self.terminal.caps);
 

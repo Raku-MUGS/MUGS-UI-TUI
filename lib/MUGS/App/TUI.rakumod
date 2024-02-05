@@ -173,7 +173,7 @@ sub main-menu(Bool :$debug, *%ui-options) {
     # Prepare to build main menu offscreen, during app-ui init
     my $menu-ui;
     my sub make-main-menu() {
-        $menu-ui = MainMenu.new(|$app-ui.game-ui-opts, :title('Main Menu | MUGS'));
+        $menu-ui = MainMenu.new(|$app-ui.game-ui-opts);
         $menu-ui.build-layout;
     }
 
