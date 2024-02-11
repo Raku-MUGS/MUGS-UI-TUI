@@ -2,6 +2,7 @@
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::UI::TUI::Logo;
+use MUGS::App::TUI::SettingsMenu;
 
 
 sub main-menu-items() {
@@ -63,10 +64,19 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
             given .<id> {
                 when 'network'  { }
                 when 'local'    { }
-                when 'settings' { }
+                when 'settings' { self.goto-submenu('settings-menu', SettingsMenu) }
                 when 'help'     { }
                 when 'exit'     { $.terminal.quit }
             }
         }
+    }
+
+    #| Go to a submenu
+    method goto-submenu($name, $class) {
+        # XXXX: Cache already-visited submenus?
+        # XXXX: Generate submenus at app startup?
+        my $submenu = $class.new(:$.x, :$.y, :$.z, :$.w, :$.h, :$.terminal,
+                                 prev-screen => self);
+        $.terminal.set-toplevel($submenu);
     }
 }
