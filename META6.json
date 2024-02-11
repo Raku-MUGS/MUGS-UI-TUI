@@ -19,8 +19,13 @@
   "provides": {
     "MUGS::App::TUI": "lib/MUGS/App/TUI.rakumod",
     "MUGS::App::TUI::MainMenu": "lib/MUGS/App/TUI/MainMenu.rakumod",
+    "MUGS::App::TUI::SettingsMenu": "lib/MUGS/App/TUI/SettingsMenu.rakumod",
     "MUGS::UI::TUI": "lib/MUGS/UI/TUI.rakumod",
-    "MUGS::UI::TUI::Game::PFX": "lib/MUGS/UI/TUI/Game/PFX.rakumod"
+    "MUGS::UI::TUI::Game::PFX": "lib/MUGS/UI/TUI/Game/PFX.rakumod",
+    "MUGS::UI::TUI::Layout::CenteredMenu": "lib/MUGS/UI/TUI/Layout/CenteredMenu.rakumod",
+    "MUGS::UI::TUI::Layout::PrimaryMenu": "lib/MUGS/UI/TUI/Layout/PrimaryMenu.rakumod",
+    "MUGS::UI::TUI::Layout::StandardScreen": "lib/MUGS/UI/TUI/Layout/StandardScreen.rakumod",
+    "MUGS::UI::TUI::Logo": "lib/MUGS/UI/TUI/Logo.rakumod"
   },
   "resources": [
   ],
