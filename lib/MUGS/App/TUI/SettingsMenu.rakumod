@@ -1,6 +1,6 @@
 # ABSTRACT: Settings Menu UI
 
-use MUGS::UI::TUI::Layout::CenteredMenu;
+use MUGS::UI::TUI::Layout::PrimaryMenu;
 
 
 sub settings-menu-items() {
@@ -29,7 +29,7 @@ sub settings-menu-items() {
 
 #| Settings menu
 # XXXX: Factor out submenu functionality?
-class SettingsMenu is MUGS::UI::TUI::Layout::CenteredMenu {
+class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name = 'settings-menu';
     has Str:D $.title     = 'Settings Menu | MUGS';
     has       $.items     =  settings-menu-items;

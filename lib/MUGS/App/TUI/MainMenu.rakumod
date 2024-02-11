@@ -1,6 +1,6 @@
 # ABSTRACT: Main Menu UI
 
-use MUGS::UI::TUI::Layout::CenteredMenu;
+use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::UI::TUI::Logo;
 
 
@@ -40,14 +40,15 @@ sub main-menu-items() {
 
 
 #| Main menu with logo above menu items
-class MainMenu is MUGS::UI::TUI::Layout::CenteredMenu {
+class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name = 'main-menu';
     has Str:D $.title     = 'Main Menu | MUGS';
+    has Str:D $.breadcrumbs = '';
     has       $.items     =  main-menu-items;
     has       $.logo-text =  mugs-logo(self.terminal.caps);
 
     #| Define initial layout for header section of menu page
-    method header-layout($builder, $max-width, $max-height) {
+    method menu-header-layout($builder, $max-width, $max-height) {
         # Space above height-minimized logo
         with $builder {
             .node(),
