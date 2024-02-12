@@ -1,6 +1,7 @@
 # ABSTRACT: Settings Menu UI
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
+use MUGS::App::TUI::TerminalMenu;
 
 
 sub settings-menu-items() {
@@ -38,7 +39,7 @@ class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     method process-selection($menu) {
         with $menu.items[$menu.selected] {
             given .<id> {
-                when 'terminal' { }
+                when 'terminal' { self.goto-submenu('terminal-menu', TerminalMenu) }
                 when 'help'     { self.goto-help }
                 when 'back'     { self.goto-prev-screen }
             }
