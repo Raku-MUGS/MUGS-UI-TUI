@@ -66,18 +66,9 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
                 when 'network'  { }
                 when 'local'    { }
                 when 'settings' { self.goto-submenu('settings-menu', SettingsMenu) }
-                when 'help'     { }
+                when 'help'     { self.goto-help }
                 when 'exit'     { $.terminal.quit }
             }
         }
-    }
-
-    #| Go to a submenu
-    method goto-submenu($name, $class) {
-        # XXXX: Cache already-visited submenus?
-        # XXXX: Generate submenus at app startup?
-        my $submenu = $class.new(:$.x, :$.y, :$.z, :$.w, :$.h, :$.terminal,
-                                 prev-screen => self);
-        $.terminal.set-toplevel($submenu);
     }
 }

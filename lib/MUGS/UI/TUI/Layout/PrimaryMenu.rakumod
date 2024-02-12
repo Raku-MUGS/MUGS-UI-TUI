@@ -40,4 +40,13 @@ does MUGS::UI::TUI::Layout::StandardScreen {
     method focus-on-content(Bool:D :$redraw = False) {
         self.focus-on(%.by-id<menu>, :$redraw);
     }
+
+    #| Go to a submenu
+    method goto-submenu($name, $class) {
+        # XXXX: Cache already-visited submenus?
+        # XXXX: Generate submenus at app startup?
+        my $submenu = $class.new(:$.x, :$.y, :$.z, :$.w, :$.h, :$.terminal,
+                                 prev-screen => self);
+        $.terminal.set-toplevel($submenu);
+    }
 }

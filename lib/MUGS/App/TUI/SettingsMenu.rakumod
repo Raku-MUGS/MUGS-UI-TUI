@@ -28,7 +28,6 @@ sub settings-menu-items() {
 
 
 #| Settings menu
-# XXXX: Factor out submenu functionality?
 class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name  = 'settings-menu';
     has Str:D $.breadcrumb = 'Settings';
@@ -40,8 +39,8 @@ class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
         with $menu.items[$menu.selected] {
             given .<id> {
                 when 'terminal' { }
-                when 'help'     { }
-                when 'back'     { $.terminal.set-toplevel($.prev-screen) }
+                when 'help'     { self.goto-help }
+                when 'back'     { self.goto-prev-screen }
             }
         }
     }

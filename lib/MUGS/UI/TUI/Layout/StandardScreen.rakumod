@@ -164,6 +164,25 @@ does MUGS::UI::TUI::Layout::HintFooter {
         $is-rebuild
     }
 
+    #| Go to a help screen by topic string
+    multi method goto-help(Str:D $topic) {
+    }
+
+    #| Go to a context help screen for a given screen UI object
+    multi method goto-help(MUGS::UI::TUI::Layout::StandardScreen $topic) {
+        self.goto-help($topic.^name);
+    }
+
+    #| Go to a context help screen for the *current* screen UI object
+    multi method goto-help() {
+        self.goto-help(self);
+    }
+
+    #| Go to the previous menu or UI screen, if any
+    method goto-prev-screen() {
+        $.terminal.set-toplevel($.prev-screen) if $.prev-screen;
+    }
+
     #| Return trail of previously visited screens starting with current screen
     method screen-trail() {
         my @trail = self,;
