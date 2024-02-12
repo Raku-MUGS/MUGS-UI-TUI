@@ -23,8 +23,7 @@ sub settings-menu-items() {
             title   => 'Back to Main Menu',
             hotkeys => < b B m M CursorLeft Escape Ctrl-C >,
             hint    => 'Return to top level main menu',
-        },
-    ;
+        };
 }
 
 
