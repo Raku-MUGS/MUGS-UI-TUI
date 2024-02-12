@@ -141,6 +141,9 @@ does MUGS::UI::TUI::Layout::NavHeader
 does MUGS::UI::TUI::Layout::CenteredContent
 does MUGS::UI::TUI::Layout::HintFooter {
 
+    has MUGS::UI::TUI::Layout::StandardScreen $.prev-screen;
+
+
     ### Required methods
 
     #| Focus on the first active content
@@ -159,5 +162,22 @@ does MUGS::UI::TUI::Layout::HintFooter {
 
         # Return is-rebuild for subclasses
         $is-rebuild
+    }
+
+    #| Return trail of previously visited screens starting with current screen
+    method screen-trail() {
+        my @trail = self,;
+        while @trail[*-1].prev-screen -> $prev {
+            @trail.push($prev);
+        }
+        @trail
+    }
+
+    #| Return breadcrumbs to this point
+    # XXXX: Multicolor
+    # XXXX: Factor out as separate mini-widget
+    # XXXX: Clickable previous entries?
+    method breadcrumbs() {
+        self.screen-trail.reverse.map(*.?breadcrumb).grep(?*).join(' > ')
     }
 }

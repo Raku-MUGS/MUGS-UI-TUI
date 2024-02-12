@@ -30,16 +30,10 @@ sub settings-menu-items() {
 #| Settings menu
 # XXXX: Factor out submenu functionality?
 class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name = 'settings-menu';
-    has Str:D $.title     = 'Settings Menu | MUGS';
-    has       $.items     =  settings-menu-items;
-    has       $.prev-screen is required;
-
-    # XXXX: Multicolor
-    # XXXX: Factor out as separate mini-widget
-    # XXXX: Clickable 'Main'?
-    has Str:D $.breadcrumbs = 'Main > Settings';
-
+    has Str:D $.grid-name  = 'settings-menu';
+    has Str:D $.breadcrumb = 'Settings';
+    has Str:D $.title      = 'Settings Menu | MUGS';
+    has       $.items      =  settings-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {

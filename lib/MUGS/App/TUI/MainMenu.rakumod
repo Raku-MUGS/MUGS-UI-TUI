@@ -42,11 +42,12 @@ sub main-menu-items() {
 
 #| Main menu with logo above menu items
 class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name = 'main-menu';
-    has Str:D $.title     = 'Main Menu | MUGS';
-    has Str:D $.breadcrumbs = '';
-    has       $.items     =  main-menu-items;
-    has       $.logo-text =  mugs-logo(self.terminal.caps);
+    has Str:D $.grid-name   = 'main-menu';
+    has Str:D $.breadcrumb  = 'Main';
+    has Str:D $.breadcrumbs = '';  # Intentional override to silence
+    has Str:D $.title       = 'Main Menu | MUGS';
+    has       $.items       =  main-menu-items;
+    has       $.logo-text   =  mugs-logo(self.terminal.caps);
 
     #| Define initial layout for header section of menu page
     method menu-header-layout($builder, $max-width, $max-height) {
