@@ -7,19 +7,19 @@ sub terminal-menu-items() {
     my constant @menu =
         {
             id      => 'colors',
-            title   => 'Colors',
+            title   => 'Color Support',
             hotkeys => < c C >,
             hint    => 'Set color and attribute capabilities for this terminal',
         },
         {
             id      => 'symbols',
-            title   => 'Symbols',
+            title   => 'Symbol Support',
             hotkeys => < s S >,
             hint    => 'Set symbol set support level for this terminal',
         },
         {
             id      => 'line-drawing',
-            title   => 'Line Drawing',
+            title   => 'Line Drawing Support',
             hotkeys => < l L >,
             hint    => 'Set line drawing support level for this terminal',
         },
@@ -33,7 +33,7 @@ sub terminal-menu-items() {
             id      => 'back',
             title   => 'Back to Settings Menu',
             hotkeys => < b B s S CursorLeft Escape Ctrl-C >,
-            hint    => 'Return to previous menu level (settings)',
+            hint    => 'Return to previous menu level (Settings)',
         };
 }
 
