@@ -1,16 +1,30 @@
 # ABSTRACT: Settings Menu UI
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
+use MUGS::App::TUI::A11yMenu;
 use MUGS::App::TUI::TerminalMenu;
+use MUGS::App::TUI::UIPrefsMenu;
 
 
 sub settings-menu-items() {
     my constant @menu =
         {
+            id      => 'a11y',
+            title   => 'Accessibility',
+            hotkeys => < a A >,
+            hint    => 'Configure accessibility features and assistive technologies',
+        },
+        {
+            id      => 'ui-prefs',
+            title   => 'UI Preferences',
+            hotkeys => < u U >,
+            hint    => 'Adjust UI preferences such as locale, themes, and animation',
+        },
+        {
             id      => 'terminal',
             title   => 'Terminal',
             hotkeys => < t T >,
-            hint    => 'Adjust terminal settings and preferences',
+            hint    => 'Adjust terminal settings such as standards and font support',
         },
         {
             id      => 'help',
@@ -38,6 +52,8 @@ class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     method process-selection($menu) {
         with $menu.items[$menu.selected] {
             given .<id> {
+                when 'a11y'     { self.goto-submenu('a11y-menu',     A11yMenu)     }
+                when 'ui-prefs' { self.goto-submenu('ui-prefs-menu', UIPrefsMenu)  }
                 when 'terminal' { self.goto-submenu('terminal-menu', TerminalMenu) }
                 when 'help'     { self.goto-help }
                 when 'back'     { self.goto-prev-screen }
