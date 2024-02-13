@@ -12,6 +12,12 @@ sub ui-prefs-menu-items() {
             hint    => 'Tweak or override system locale settings',
         },
         {
+            id      => 'optional-ui',
+            title   => 'Optional Elements',
+            hotkeys => < o O >,
+            hint    => 'Show or hide optional UI elements',
+        },
+        {
             id      => 'help',
             title   => 'HELP!',
             hotkeys => < h H ? ¿ ; >,
@@ -37,6 +43,8 @@ class UIPrefsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     method process-selection($menu) {
         with $menu.items[$menu.selected] {
             given .<id> {
+                when 'locale'       { }
+                when 'optional-ui'  { }
                 when 'help'         { self.goto-help }
                 when 'back'         { self.goto-prev-screen }
             }
