@@ -19,9 +19,11 @@
   "perl": "6.d",
   "provides": {
     "MUGS::App::TUI": "lib/MUGS/App/TUI.rakumod",
+    "MUGS::App::TUI::A11yMenu": "lib/MUGS/App/TUI/A11yMenu.rakumod",
     "MUGS::App::TUI::MainMenu": "lib/MUGS/App/TUI/MainMenu.rakumod",
     "MUGS::App::TUI::SettingsMenu": "lib/MUGS/App/TUI/SettingsMenu.rakumod",
     "MUGS::App::TUI::TerminalMenu": "lib/MUGS/App/TUI/TerminalMenu.rakumod",
+    "MUGS::App::TUI::UIPrefsMenu": "lib/MUGS/App/TUI/UIPrefsMenu.rakumod",
     "MUGS::UI::TUI": "lib/MUGS/UI/TUI.rakumod",
     "MUGS::UI::TUI::Game::PFX": "lib/MUGS/UI/TUI/Game/PFX.rakumod",
     "MUGS::UI::TUI::Layout::PrimaryMenu": "lib/MUGS/UI/TUI/Layout/PrimaryMenu.rakumod",
