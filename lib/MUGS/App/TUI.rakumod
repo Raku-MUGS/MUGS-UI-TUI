@@ -131,6 +131,12 @@ class MUGS::App::TUI is MUGS::App::LocalUI
         }
     }
 
+    method load-plugins() {
+        # Intentionally ignore this path; in this UI, plugin loading is already
+        # done in loading-promises as part of the loading screen (itself a part
+        # of the app's `initialize` phase).
+    }
+
     #| Shut down the overall MUGS client app (as cleanly as possible)
     method shutdown() {
         callsame;
