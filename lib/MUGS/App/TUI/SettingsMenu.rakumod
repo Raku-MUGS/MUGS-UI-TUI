@@ -1,5 +1,7 @@
 # ABSTRACT: Settings Menu UI
 
+use Terminal::Widgets::I18N::Translation;
+
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::App::TUI::A11yMenu;
 use MUGS::App::TUI::TerminalMenu;
@@ -7,46 +9,49 @@ use MUGS::App::TUI::UIPrefsMenu;
 
 
 sub settings-menu-items() {
-    my constant @menu =
+    ¢'settings-menu';
+
+    # XXXX: Translation of hotkeys
+    my @menu =
         {
-            id      => 'a11y',
-            title   => 'Accessibility',
+            id      =>  'a11y',
+            title   => ¿'Accessibility',
+            hint    => ¿'Configure accessibility features and assistive technologies',
             hotkeys => < a A >,
-            hint    => 'Configure accessibility features and assistive technologies',
         },
         {
-            id      => 'ui-prefs',
-            title   => 'UI Preferences',
+            id      =>  'ui-prefs',
+            title   => ¿'UI Preferences',
+            hint    => ¿'Adjust UI preferences such as locale, themes, and animation',
             hotkeys => < u U >,
-            hint    => 'Adjust UI preferences such as locale, themes, and animation',
         },
         {
-            id      => 'terminal',
-            title   => 'Terminal',
+            id      =>  'terminal',
+            title   => ¿'Terminal',
+            hint    => ¿'Adjust terminal settings such as standards and font support',
             hotkeys => < t T >,
-            hint    => 'Adjust terminal settings such as standards and font support',
         },
         {
-            id      => 'help',
-            title   => 'HELP!',
+            id      =>  'help',
+            title   => ¿'HELP!',
+            hint    => ¿'View help info related to settings',
             hotkeys => < h H ? ¿ ; >,
-            hint    => 'View help info related to settings',
         },
         {
-            id      => 'back',
-            title   => 'Back to Main Menu',
+            id      =>  'back',
+            title   => ¿'Back to Main Menu',
+            hint    => ¿'Return to top level main menu',
             hotkeys => < b B m M CursorLeft Escape Ctrl-C >,
-            hint    => 'Return to top level main menu',
         };
 }
 
 
 #| Settings menu
 class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  = 'settings-menu';
-    has Str:D $.breadcrumb = 'Settings';
-    has Str:D $.title      = 'Settings Menu | MUGS';
-    has       $.items      =  settings-menu-items;
+    has Str:D $.grid-name  =  'settings-menu';
+    has       $.breadcrumb = ¿'Settings';
+    has       $.title      = ¿'Settings Menu | MUGS';
+    has       $.items      =   settings-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {

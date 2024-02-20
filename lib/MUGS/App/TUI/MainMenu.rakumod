@@ -51,8 +51,8 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.breadcrumbs =  '';  # Intentional override to silence
     has       $.breadcrumb  = ¿'Main';
     has       $.title       = ¿'Main Menu | MUGS';
-    has       $.items       =  main-menu-items;
-    has       $.logo-text   =  mugs-logo(self.terminal.caps);
+    has       $.items       =   main-menu-items;
+    has       $.logo-text   =   mugs-logo(self.terminal.caps);
 
     #| Define initial layout for header section of menu page
     method menu-header-layout($builder, $max-width, $max-height) {

@@ -1,31 +1,36 @@
 # ABSTRACT: Accessibility Menu UI
 
+use Terminal::Widgets::I18N::Translation;
+
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 
 
 sub a11y-menu-items() {
-    my constant @menu =
+    ¢'a11y-menu';
+
+    # XXXX: Translation of hotkeys
+    my @menu =
         {
-            id      => 'help',
-            title   => 'HELP!',
+            id      =>  'help',
+            title   => ¿'HELP!',
+            hint    => ¿'View help info related to accessibility settings',
             hotkeys => < h H ? ¿ ; >,
-            hint    => 'View help info related to accessibility settings',
         },
         {
-            id      => 'back',
-            title   => 'Back to Settings Menu',
+            id      =>  'back',
+            title   => ¿'Back to Settings Menu',
+            hint    => ¿'Return to previous menu level (Settings)',
             hotkeys => < b B s S CursorLeft Escape Ctrl-C >,
-            hint    => 'Return to previous menu level (Settings)',
         };
 }
 
 
 #| Accessibility menu
 class A11yMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  = 'a11y-menu';
-    has Str:D $.breadcrumb = 'Accessibility';
-    has Str:D $.title      = 'Accessibility | MUGS';
-    has       $.items      =  a11y-menu-items;
+    has Str:D $.grid-name  =  'a11y-menu';
+    has       $.breadcrumb = ¿'Accessibility';
+    has       $.title      = ¿'Accessibility | MUGS';
+    has       $.items      =   a11y-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {
