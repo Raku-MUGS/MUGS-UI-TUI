@@ -3,6 +3,7 @@
 use Text::MiscUtils::Layout;
 
 use Terminal::Widgets::Simple::TopLevel;
+use Terminal::Widgets::I18N::Translation;
 
 
 #| A general overall screen layout with header, content, and footer sections
@@ -106,7 +107,8 @@ role MUGS::UI::TUI::Layout::HintFooter {
     # XXXX: Translations?
     method max-wrapped-dims(@items) {
         # Wrap each text item and ensure enough room to display any of them
-        my @wrapped   = @items.map({ text-wrap($.w, $_) });
+        my $locale    = $.terminal.locale;
+        my @wrapped   = @items.map({ text-wrap($.w, ~$locale.translate($_)) });
         my $max-lines = 0 max @wrapped.map(*.elems).max;
         my $max-width = 0 max @wrapped.map(*.map(&duospace-width)).flat.max;
 
@@ -197,6 +199,9 @@ does MUGS::UI::TUI::Layout::HintFooter {
     # XXXX: Factor out as separate mini-widget
     # XXXX: Clickable previous entries?
     method breadcrumbs() {
-        self.screen-trail.reverse.map(*.?breadcrumb).grep(?*).join(' > ')
+        my $locale = $.terminal.locale;
+        my @crumbs = self.screen-trail.reverse.map(*.?breadcrumb).grep(?*);
+
+        @crumbs.map({ ~$locale.translate($_) }).join(' > ')
     }
 }
