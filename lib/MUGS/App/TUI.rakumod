@@ -101,7 +101,7 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
     #| Load plugins in loading screen, tracking progress
     method loading-promises($tracker, @loading-tasks) {
-        my $tasks = 3 + @loading-tasks;
+        my $tasks = 7 + @loading-tasks;
         my \Δ     = ($tracker.max - $tracker.progress) / $tasks;
 
         start {
@@ -117,6 +117,15 @@ class MUGS::App::TUI is MUGS::App::LocalUI
             $tracker.add-progress(Δ);
 
             self.load-client-plugins;
+            $tracker.add-progress(Δ);
+
+            require MUGS::UI::TUI;
+            $tracker.add-progress(Δ);
+            require MUGS::UI::TUI::Layout::PrimaryMenu;
+            $tracker.add-progress(Δ);
+            require MUGS::App::TUI::SettingsMenu;
+            $tracker.add-progress(Δ);
+            require MUGS::App::TUI::MainMenu;
             $tracker.add-progress(Δ);
 
             self.load-ui-plugins;
