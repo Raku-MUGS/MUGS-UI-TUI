@@ -8,7 +8,6 @@ use Terminal::Widgets::Simple::App;
 use Terminal::Widgets::Progress::Tracker;
 
 use MUGS::Core;
-use MUGS::App::TUI::MainMenu;
 use MUGS::App::LocalUI;
 use MUGS::UI::TUI;
 
@@ -179,7 +178,8 @@ sub main-menu(Bool :$debug, *%ui-options) {
     # Prepare to build main menu offscreen, during app-ui init
     my $menu-ui;
     my sub make-main-menu() {
-        $menu-ui = MainMenu.new(|$app-ui.game-ui-opts);
+        require MUGS::App::TUI::MainMenu;
+        $menu-ui = ::('MainMenu').new(|$app-ui.game-ui-opts);
         $menu-ui.build-layout;
     }
 
