@@ -1,11 +1,10 @@
 # ABSTRACT: Core logic to set up and run a TUI game
 
 use Terminal::Capabilities;
+
+use Terminal::Widgets::Widget;
 use Terminal::Widgets::Terminal;
 use Terminal::Widgets::Simple::App;
-
-use Text::MiscUtils::Layout;
-use Terminal::Widgets::Widget;
 use Terminal::Widgets::Progress::Tracker;
 
 use MUGS::Core;
@@ -30,10 +29,11 @@ class ProgressBar is Terminal::Widgets::Widget
     #| Initialize the progress bar beyond simply setting attributes
     submethod TWEAK() {
         # Render initial text
-        my @lines = $!text.lines;
-        my $top = (self.h - @lines) div 2;
+        my $locale = $!terminal.locale;
+        my @lines  = $locale.translate($!text).Str.lines;
+        my $top    = (self.h - @lines) div 2;
         for @lines.kv -> $i, $line {
-            self.grid.set-span-text((self.w - duospace-width($line)) div 2,
+            self.grid.set-span-text((self.w - $locale.width($line)) div 2,
                                     $top + $i, $line);
         }
 
