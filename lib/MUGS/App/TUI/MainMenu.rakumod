@@ -1,51 +1,56 @@
 # ABSTRACT: Main Menu UI
 
+use Terminal::Widgets::I18N::Translation;
+
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::UI::TUI::Logo;
 use MUGS::App::TUI::SettingsMenu;
 
 
 sub main-menu-items() {
-    my constant @menu =
+    ¢'main-menu';
+
+    # XXXX: Translation of hotkeys
+    my @menu =
         {
-            id      => 'network',
-            title   => 'Network Play',
-            hotkeys => < n N >,
-            hint    => 'Join a network server and play worldwide',
-        },
-        {
-            id      => 'local',
-            title   => 'Local Play',
+            id      =>  'local',
+            title   => ¿'Local Play',
+            hint    => ¿'Play locally in solo, turns, or multi-controller modes',
             hotkeys => < l L >,
-            hint    => 'Play locally in solo, turns, or multi-controller modes',
         },
         {
-            id      => 'settings',
-            title   => 'Settings',
+            id      =>  'network',
+            title   => ¿'Network Play',
+            hint    => ¿'Join a network server and play worldwide',
+            hotkeys => < n N >,
+        },
+        {
+            id      =>  'settings',
+            title   => ¿'Settings',
+            hint    => ¿'Configure settings and preferences',
             hotkeys => < s S >,
-            hint    => 'Configure settings and preferences',
         },
         {
-            id      => 'help',
-            title   => 'HELP!',
+            id      =>  'help',
+            title   => ¿'HELP!',
+            hint    => ¿'View documentation and other help info',
             hotkeys => < h H ? ¿ ; >,
-            hint    => 'View documentation and other help info',
         },
         {
-            id      => 'exit',
-            title   => 'Exit MUGS',
+            id      =>  'exit',
+            title   => ¿'Exit MUGS',
+            hint    => ¿'Disconnect from all games and servers and quit MUGS',
             hotkeys => < e E q Q x X Escape Ctrl-C Ctrl-D >,
-            hint    => 'Disconnect from all games and servers and quit MUGS',
         };
 }
 
 
 #| Main menu with logo above menu items
 class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name   = 'main-menu';
-    has Str:D $.breadcrumb  = 'Main';
-    has Str:D $.breadcrumbs = '';  # Intentional override to silence
-    has Str:D $.title       = 'Main Menu | MUGS';
+    has Str:D $.grid-name   =  'main-menu';
+    has Str:D $.breadcrumbs =  '';  # Intentional override to silence
+    has       $.breadcrumb  = ¿'Main';
+    has       $.title       = ¿'Main Menu | MUGS';
     has       $.items       =  main-menu-items;
     has       $.logo-text   =  mugs-logo(self.terminal.caps);
 
