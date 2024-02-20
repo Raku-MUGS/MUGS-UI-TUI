@@ -9,7 +9,6 @@ use Terminal::Widgets::Progress::Tracker;
 
 use MUGS::Core;
 use MUGS::App::LocalUI;
-use MUGS::UI::TUI;
 
 
 # Use subcommand MAIN args
