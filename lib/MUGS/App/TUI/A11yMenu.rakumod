@@ -27,10 +27,10 @@ sub a11y-menu-items() {
 
 #| Accessibility menu
 class A11yMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  =  'a11y-menu';
-    has       $.breadcrumb = ¿'Accessibility';
-    has       $.title      = ¿'Accessibility | MUGS';
-    has       $.items      =   a11y-menu-items;
+    has Str:D $.grid-name  = 'a11y-menu';
+    has       $.breadcrumb = 'a11y-menu' ¢¿ 'Accessibility';
+    has       $.title      = 'a11y-menu' ¢¿ 'Accessibility | MUGS';
+    has       $.items      =  a11y-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {

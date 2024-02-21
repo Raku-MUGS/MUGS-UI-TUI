@@ -39,10 +39,10 @@ sub ui-prefs-menu-items() {
 
 #| UI preferences menu
 class UIPrefsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  =  'ui-prefs-menu';
-    has       $.breadcrumb = ¿'UI Preferences';
-    has       $.title      = ¿'UI Preferences | MUGS';
-    has       $.items      =   ui-prefs-menu-items;
+    has Str:D $.grid-name  = 'ui-prefs-menu';
+    has       $.breadcrumb = 'ui-prefs-menu' ¢¿ 'UI Preferences';
+    has       $.title      = 'ui-prefs-menu' ¢¿ 'UI Preferences | MUGS';
+    has       $.items      =  ui-prefs-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {

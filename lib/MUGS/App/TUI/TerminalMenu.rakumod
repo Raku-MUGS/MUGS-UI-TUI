@@ -45,10 +45,10 @@ sub terminal-menu-items() {
 
 #| Terminal settings menu
 class TerminalMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  =  'terminal-menu';
-    has       $.breadcrumb = ¿'Terminal';
-    has       $.title      = ¿'Terminal Settings | MUGS';
-    has       $.items      =   terminal-menu-items;
+    has Str:D $.grid-name  = 'terminal-menu';
+    has       $.breadcrumb = 'terminal-menu' ¢¿ 'Terminal';
+    has       $.title      = 'terminal-menu' ¢¿ 'Terminal Settings | MUGS';
+    has       $.items      =  terminal-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {

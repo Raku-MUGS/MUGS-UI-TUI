@@ -48,10 +48,10 @@ sub settings-menu-items() {
 
 #| Settings menu
 class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
-    has Str:D $.grid-name  =  'settings-menu';
-    has       $.breadcrumb = ¿'Settings';
-    has       $.title      = ¿'Settings Menu | MUGS';
-    has       $.items      =   settings-menu-items;
+    has Str:D $.grid-name  = 'settings-menu';
+    has       $.breadcrumb = 'settings-menu' ¢¿ 'Settings';
+    has       $.title      = 'settings-menu' ¢¿ 'Settings Menu | MUGS';
+    has       $.items      =  settings-menu-items;
 
     #| Process menu selections
     method process-selection($menu) {
