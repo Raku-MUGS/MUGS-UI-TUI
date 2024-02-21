@@ -21,8 +21,6 @@ sub translation-contexts() is export {
 }
 
 
-
-
 #| Translation table for pig ("Pig Latin")
 #  Easy to notice, and tests widening every screen element
 sub trans-pig() {
