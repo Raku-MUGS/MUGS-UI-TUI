@@ -183,6 +183,28 @@ sub main-menu(Bool :$debug, *%ui-options) {
     my $*DEBUG = $debug // ?%*ENV<MUGS_DEBUG>;
     my $app-ui = MUGS::App::TUI.new(|%ui-options);
 
+    # Prepare to load translation tables during app-ui init
+    my sub load-translations() {
+        require Terminal::Widgets::I18N::Translation
+                < LanguageSelection TranslatableString >;
+        require MUGS::App::TUI::Translations::Test
+                < &translation-languages &translation-contexts >;
+
+        my @languages := translation-languages;
+        my @contexts  := translation-contexts;
+        my @iso-codes  = @languages.map(*<iso-code>);
+        my $best-lang  = LanguageSelection.best-languages(@iso-codes)[0];
+
+        $app-ui.exit-with-errors("Could not find a matching translation language!", [])
+            unless $best-lang;
+
+        my %lang-info := @languages.first(*<iso-code> eq $best-lang);
+        # XXXX: Check loader?
+        my %trans     := %lang-info<loader>();
+        my $terminal   = $app-ui.terminal;
+        $terminal.set-locale($terminal.locale.clone(string-table => %trans));
+    }
+
     # Prepare to build main menu offscreen, during app-ui init
     my $menu-ui;
     my sub make-main-menu() {
@@ -192,7 +214,7 @@ sub main-menu(Bool :$debug, *%ui-options) {
     }
 
     # Actually initialize app UI; should exit with message on error
-    $app-ui.initialize(&make-main-menu);
+    $app-ui.initialize(&load-translations, &make-main-menu);
 
     # Set main menu as new toplevel, triggering draw and compose
     $app-ui.terminal.set-toplevel($menu-ui);
