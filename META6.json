@@ -10,7 +10,7 @@
     "MUGS::Games:ver<0.1.3>",
     "Terminal::Capabilities:auth<zef:japhb>:ver<0.0.3>",
     "Terminal::Print:auth<zef:terminal-printers>:ver<0.976>",
-    "Terminal::Widgets:auth<zef:japhb>:ver<0.1.0+>",
+    "Terminal::Widgets:auth<zef:japhb>:ver<0.1.1+>",
     "Text::MiscUtils:auth<zef:japhb>:ver<0.0.9>"
   ],
   "description": "Fullscreen Terminal UI for MUGS, including App and game UIs",
@@ -23,6 +23,7 @@
     "MUGS::App::TUI::MainMenu": "lib/MUGS/App/TUI/MainMenu.rakumod",
     "MUGS::App::TUI::SettingsMenu": "lib/MUGS/App/TUI/SettingsMenu.rakumod",
     "MUGS::App::TUI::TerminalMenu": "lib/MUGS/App/TUI/TerminalMenu.rakumod",
+    "MUGS::App::TUI::Translations::Test": "lib/MUGS/App/TUI/Translations/Test.rakumod",
     "MUGS::App::TUI::UIPrefsMenu": "lib/MUGS/App/TUI/UIPrefsMenu.rakumod",
     "MUGS::UI::TUI": "lib/MUGS/UI/TUI.rakumod",
     "MUGS::UI::TUI::Game::PFX": "lib/MUGS/UI/TUI/Game/PFX.rakumod",
