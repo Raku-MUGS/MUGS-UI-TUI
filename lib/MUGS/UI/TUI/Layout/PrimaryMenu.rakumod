@@ -12,6 +12,7 @@ does MUGS::UI::TUI::Layout::StandardScreen {
     method menu-header-layout($builder, $max-width, $max-height) { Empty }
     method process-selection($menu) { }
     method items() { Empty }
+    method icons() { hash() }
 
 
     ### Implementation methods
@@ -28,7 +29,7 @@ does MUGS::UI::TUI::Layout::StandardScreen {
             # Vertical stack with spaces between
             |self.menu-header-layout($builder, $max-width, $max-height),
             .node(),
-            .menu(id => 'menu', :@.items, :&process-input,
+            .menu(id => 'menu', :@.items, :%.icons, :&process-input,
                   hint-target => 'hint',
                   color => %( focused => '', ),
                   style => %( :minimize-h, )),
