@@ -122,7 +122,7 @@ role MUGS::UI::TUI::Layout::HintFooter {
         with $builder {
             # Full width, minimum height
             # XXXX: Factor out other color and style settings
-            .plain-text(id => 'hint', color => 'italic',
+            .plain-text(id => 'hint', color => 'italic', :wrap,
                         style => %( :$min-w, :$min-h, :minimize-h )),
         }
     }
