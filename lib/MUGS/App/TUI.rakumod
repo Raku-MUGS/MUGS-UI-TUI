@@ -201,7 +201,7 @@ sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
     # Configure debugging and create app-ui object
     my $t-start = now;
     my $*SAFE   = $safe  // ?%*ENV<MUGS_SAFE>;
-    my $*DEBUG  = $debug // ?%*ENV<MUGS_DEBUG>;
+    my $*DEBUG  = $debug // +%*ENV<MUGS_DEBUG>;
     my $app-ui  = MUGS::App::TUI.new(|%ui-options);
 
     # Determine whether to output startup performance debugging info
