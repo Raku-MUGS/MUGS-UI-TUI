@@ -131,9 +131,9 @@ class MUGS::UI::TUI::Game::PFX
         my $clock-skew  = $message.created - $validated<update-sent>;
 
         $.grid.set-span($col, $row,     sprintf('%-12s  %8d', 'Particles', $count), '');
-        $.grid.set-span($col, $row + 1, sprintf('%-12s  %6.1fm‭s', 'Clock skew',
+        $.grid.set-span($col, $row + 1, sprintf('%-12s  %6.1fms', 'Clock skew',
                                                 $clock-skew * 1000), '');
-        $.grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fm‭s', 'Render time',
+        $.grid.set-span($col, $row + 2, sprintf('%-12s  %6.1fms', 'Render time',
                                                 $tr * 1000), '');
         $.grid.set-span($col, $row + 3, sprintf('%-12s  %6.1fms', 'Δt',
                                                 $validated<dt> * 1000), '');
