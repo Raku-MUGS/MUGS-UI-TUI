@@ -281,8 +281,13 @@ class MUGS::UI::TUI::Game::PFX
         # Interval supplies can't run faster than 1ms per tick
         my $spf = max 0.001, 1 / ($fps || 1000);
 
-        start react whenever Supply.interval($spf) {
-            self.render-updates;
+        start react {
+            whenever Supply.interval($spf) {
+                self.render-updates;
+            }
+            whenever $.ui-control {
+                done;
+            }
         }
     }
 
@@ -299,7 +304,12 @@ class MUGS::UI::TUI::Game::PFX
         my $key = $event.keyname;
 
         with %keymap{$key} {
-            when 'quit-game'  { await $.client.leave; $.terminal.quit }
+            when 'quit-game'  {
+                $.ui-controller.emit('quit');
+                await $.client.leave;
+                $.prev-screen ?? $.terminal.set-toplevel($.prev-screen)
+                              !! $.terminal.quit
+            }
             when 'pause-game' { $.client.send-pause-request }
         }
     }
