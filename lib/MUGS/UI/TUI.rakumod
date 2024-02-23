@@ -13,6 +13,7 @@ use MUGS::UI;
 class Game is MUGS::UI::Game is TopLevel {
     has $.ui-controller = Supplier.new;
     has $.ui-control    = $!ui-controller.Supply;
+    has $.prev-screen;
 
     method ui-type() { 'TUI' }
 }

@@ -69,7 +69,8 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
     #| Use full screen for games
     method game-ui-opts() {
-        %( :$.terminal, :w($.terminal.w), :h($.terminal.h), :x(0), :y(0) )
+        %( :$.terminal, :w($.terminal.w), :h($.terminal.h), :x(0), :y(0),
+           prev-screen => $.terminal.current-toplevel)
     }
 
     #| Initialize the terminal and overall MUGS client app
@@ -213,7 +214,7 @@ sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
     my $menu-ui;
     my sub make-main-menu() {
         require MUGS::App::TUI::MainMenu;
-        $menu-ui = ::('MainMenu').new(|$app-ui.game-ui-opts);
+        $menu-ui = ::('MainMenu').new(|$app-ui.game-ui-opts, prev-screen => Nil);
         $menu-ui.build-layout;
     }
 
