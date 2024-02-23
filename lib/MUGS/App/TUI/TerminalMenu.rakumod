@@ -77,7 +77,7 @@ sub terminal-menu-icons(Terminal::Capabilities:D $caps) {
         Uni7 => {
             colors       => emojify('🎨'),
             symbols      => emojify('🔣'),
-            line-drawing => '╠═',  # ╭╌  ╟─  ╠═ ╔╗  ┌┐ ┬┴
+            line-drawing => '╠═',  # ╭╌  ╟─  ╠═  ╔╗  ┌┐  ┬┴
             help         => emojify('❓'),  # ⁇
             back         => emojify('⬅'),  # 🡄
         },

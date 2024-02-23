@@ -8,15 +8,15 @@ unit module MUGS::App::TUI::Translations::Test;
 sub translation-contexts() is export {
     constant @contexts =
         { moniker => 'main-menu',
-          desc    => "Main Menu entries, hints, titles, and breadcrumbs" },
+          desc    => 'Main Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'settings-menu',
-          desc    => "Settings Menu entries, hints, titles, and breadcrumbs" },
+          desc    => 'Settings Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'a11y-menu',
-          desc    => "Accessibility Menu entries, hints, titles, and breadcrumbs" },
+          desc    => 'Accessibility Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'ui-prefs-menu',
-          desc    => "UI Preferences Menu entries, hints, titles, and breadcrumbs" },
+          desc    => 'UI Preferences Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'terminal-menu',
-          desc    => "Terminal Settings Menu entries, hints, titles, and breadcrumbs" },
+          desc    => 'Terminal Settings Menu entries, hints, titles, and breadcrumbs' },
     ;
 }
 
