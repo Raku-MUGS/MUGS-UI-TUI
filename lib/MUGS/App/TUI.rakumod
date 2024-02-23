@@ -197,11 +197,11 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
 
 #| Boot TUI and jump directly to main menu
-sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
+sub main-menu(Bool :$safe, UInt :$debug, *%ui-options) {
     # Configure debugging and create app-ui object
     my $t-start = now;
-    my $*SAFE   = $safe  // ?%*ENV<MUGS_SAFE>;
-    my $*DEBUG  = $debug // +%*ENV<MUGS_DEBUG>;
+    my $*SAFE   = $safe  //  ?%*ENV<MUGS_SAFE>;
+    my $*DEBUG  = $debug // +(%*ENV<MUGS_DEBUG> // 0);
     my $app-ui  = MUGS::App::TUI.new(|%ui-options);
 
     # Determine whether to output startup performance debugging info
@@ -292,7 +292,7 @@ sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
 
 #| Common options that work for all subcommands
 my $common-args = :(Str :$server, Str :$universe, Bool :$safe,
-                    Str :$symbols, Bool :$vt100-boxes, Bool :$debug);
+                    Str :$symbols, Bool :$vt100-boxes, UInt :$debug);
 
 #| Add description of common arguments/options to standard USAGE
 sub GENERATE-USAGE(&main, |capture) is export {
@@ -306,7 +306,7 @@ sub GENERATE-USAGE(&main, |capture) is export {
           --symbols=<Str>   Set terminal/font symbol set (defaults to full)
           --vt100-boxes     Enable use of VT100 box drawing symbols
           --safe            Use maximum compatibility defaults
-          --debug           Enable debug output
+          --debug=<UInt>    Enable debug output and set detail level
 
         Known symbol sets:
           ascii    7-bit ASCII printables only (most compatible)
