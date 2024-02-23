@@ -183,13 +183,20 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 #| Boot TUI and jump directly to main menu
 sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
     # Configure debugging and create app-ui object
-    my $start  = now;
-    my $*SAFE  = $safe  // ?%*ENV<MUGS_SAFE>;
-    my $*DEBUG = $debug // ?%*ENV<MUGS_DEBUG>;
-    my $app-ui = MUGS::App::TUI.new(|%ui-options);
+    my $t-start = now;
+    my $*SAFE   = $safe  // ?%*ENV<MUGS_SAFE>;
+    my $*DEBUG  = $debug // ?%*ENV<MUGS_DEBUG>;
+    my $app-ui  = MUGS::App::TUI.new(|%ui-options);
+
+    # Determine whether to output startup performance debugging info
+    my $startup-perf-debug = ?$*DEBUG;
 
     # Prepare to load translation tables during app-ui init
+    my ($t-plugins, $t-load-trans);
     my sub load-translations() {
+        # Last of plugins is immediate previous loading screen task
+        $t-plugins = now;
+
         require Terminal::Widgets::I18N::Translation
                 < LanguageSelection TranslatableString >;
         require MUGS::App::TUI::Translations::Test
@@ -208,21 +215,55 @@ sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
         my %trans     := %lang-info<loader>();
         my $terminal   = $app-ui.terminal;
         $terminal.set-locale($terminal.locale.clone(string-table => %trans));
+
+        $t-load-trans = now;
     }
 
     # Prepare to build main menu offscreen, during app-ui init
     my $menu-ui;
+    my $t-built;
     my sub make-main-menu() {
         require MUGS::App::TUI::MainMenu;
         $menu-ui = ::('MainMenu').new(|$app-ui.game-ui-opts, prev-screen => Nil);
         $menu-ui.build-layout;
+        $t-built = now;
     }
 
     # Actually initialize app UI; should exit with message on error
     $app-ui.initialize(&load-translations, &make-main-menu);
+    my $t-loaded = now;
 
     # Set main menu as new toplevel, triggering draw and compose
     $app-ui.terminal.set-toplevel($menu-ui);
+    my $t-menu-shown = now;
+
+    # Report startup performance in debug stream before going interactive
+    if $startup-perf-debug {
+        # Note: Does not include `raku -e ''` time, which should be added to
+        #       all below.  On my laptop, this changes Message from 3-4 frame
+        #       times to 10, and likewise for the following times as well.
+
+        # Note: Message -> Bootup (message appears to message disappears) is
+        #       about 412 ms (~25 frame times) on my laptop, most of which is
+        #       in Message -> INIT, followed by app.add-terminal.  The screen
+        #       switch takes ~1ms, so Bootup -> empty screen appears instant.
+
+        my sub show($title, $instant) {
+            note sprintf "  %-10s %6.3fs", $title ~ ':', $instant - $*INIT-INSTANT;
+        }
+
+        note "Time to complete each startup phase:";
+        show(|$_) for
+            ('Message',  $*BM_INSTANT),
+            ('INIT',     INIT now),
+            ('Start',    $t-start),
+            ('Bootup',   $app-ui.bootup-instant),
+            ('Plugins',  $t-plugins),
+            ('LoadXlat', $t-load-trans),
+            ('Built',    $t-built),
+            ('Loaded',   $t-loaded),
+            ('Menu',     $t-menu-shown)
+    }
 
     # Start the terminal event reactor (and thus interaction with the menu);
     # when this exits, the user has quit the MUGS TUI.
