@@ -17,6 +17,8 @@ sub translation-contexts() is export {
           desc    => 'UI Preferences Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'terminal-menu',
           desc    => 'Terminal Settings Menu entries, hints, titles, and breadcrumbs' },
+        { moniker => 'available-games',
+          desc    => 'Available Games screen elements' },
     ;
 }
 
@@ -148,6 +150,26 @@ sub trans-pig() {
 
             'Return to previous menu level (Settings)'
             => 'Eturnray otay eviouspray enumay evellay (Ettingsay)',
+        },
+        available-games => {
+            # Breadcrumbs / title
+            'Available Games'          => 'Availableway Amesgay',
+            'Available Games | MUGS'   => 'Availableway Amesgay | UGSMAY',
+
+            # Buttons
+            'HELP!'                    => 'ELPHAY!',
+            'Back to Main Menu'        => 'Ackbay otay Ainmay Enumay',
+
+            # Misc text
+            'Searching'                 => 'Earchingsay',
+            'No compatible games found' => 'Onay ompatiblecay amesgay oundfay',
+
+            # Button hints
+            'View help info related to available games'
+            => 'Iewvay elphay infoway elatedray otay availableway amesgay',
+
+            'Return to top level main menu'
+            => 'Eturnway otay optay evellay ainmay enumay',
         },
     ;
 }
