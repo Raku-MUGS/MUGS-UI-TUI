@@ -83,6 +83,8 @@ class MUGS::App::TUI is MUGS::App::LocalUI
     method boot-init() {
         self.MUGS::App::LocalUI::initialize;
 
+        $!symbols     //= 'ascii' if $*SAFE;
+        $!vt100-boxes //= False   if $*SAFE;
         $!symbols     //= $.config.value('UI', 'TUI', 'symbols');
         $!vt100-boxes //= $.config.value('UI', 'TUI', 'vt100-boxes');
         $!terminal      = self.add-terminal(:$.symbols, :$.vt100-boxes);
@@ -178,8 +180,10 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
 
 #| Boot TUI and jump directly to main menu
-sub main-menu(Bool :$debug, *%ui-options) {
+sub main-menu(Bool :$safe, Bool :$debug, *%ui-options) {
     # Configure debugging and create app-ui object
+    my $start  = now;
+    my $*SAFE  = $safe  // ?%*ENV<MUGS_SAFE>;
     my $*DEBUG = $debug // ?%*ENV<MUGS_DEBUG>;
     my $app-ui = MUGS::App::TUI.new(|%ui-options);
 
@@ -229,8 +233,8 @@ sub main-menu(Bool :$debug, *%ui-options) {
 
 
 #| Common options that work for all subcommands
-my $common-args = :(Str :$server, Str :$universe, Str :$symbols,
-                    Bool :$vt100-boxes, Bool :$debug);
+my $common-args = :(Str :$server, Str :$universe, Bool :$safe,
+                    Str :$symbols, Bool :$vt100-boxes, Bool :$debug);
 
 #| Add description of common arguments/options to standard USAGE
 sub GENERATE-USAGE(&main, |capture) is export {
@@ -243,6 +247,7 @@ sub GENERATE-USAGE(&main, |capture) is export {
           --universe=<Str>  Specify a local universe (internal server only)
           --symbols=<Str>   Set terminal/font symbol set (defaults to full)
           --vt100-boxes     Enable use of VT100 box drawing symbols
+          --safe            Use maximum compatibility defaults
           --debug           Enable debug output
 
         Known symbol sets:
