@@ -1,5 +1,7 @@
 # ABSTRACT: Accessibility Menu UI
 
+use Text::MiscUtils::Emojify;
+use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
@@ -24,6 +26,33 @@ sub a11y-menu-items() {
         };
 }
 
+sub a11y-menu-icons(Terminal::Capabilities:D $caps) {
+    my constant %icons =
+        ASCII => {
+            help     => '',
+            back     => '',
+        },
+        WGL4R => {
+            help     => '?',
+            back     => '▲',  # ←
+        },
+        WGL4 => {
+            help     => '?',
+            back     => '◄',
+        },
+        Uni1 => {
+            help     => '?',
+            back     => '◀',
+        },
+        Uni7 => {
+            help     => emojify('❓'),  # ⁇
+            back     => emojify('⬅'),  # 🡄
+        },
+    ;
+
+    $caps.best-symbol-choice(%icons)
+}
+
 
 #| Accessibility menu
 class A11yMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
@@ -31,6 +60,7 @@ class A11yMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has       $.breadcrumb = 'a11y-menu' ¢¿ 'Accessibility';
     has       $.title      = 'a11y-menu' ¢¿ 'Accessibility | MUGS';
     has       $.items      =  a11y-menu-items;
+    has       $.icons      =  a11y-menu-icons(self.terminal.caps);
 
     #| Process menu selections
     method process-selection($menu) {
