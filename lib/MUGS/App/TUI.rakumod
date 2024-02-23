@@ -104,6 +104,7 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
     #| Load plugins in loading screen, tracking progress
     method loading-promises($tracker, @loading-tasks) {
+        my $debug = $*DEBUG;
         my $tasks = 7 + @loading-tasks;
         my \Δ     = ($tracker.max - $tracker.progress) / $tasks;
 
@@ -119,9 +120,15 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
             $tracker.add-progress(Δ);
 
-            self.load-client-plugins;
+            my $before-clients = now;
+            my @clients = self.load-client-plugins;
+            if $debug {
+                note sprintf "Client plugins: %.3fs", now - $before-clients;
+                .raku.indent(2).note for @clients;
+            }
             $tracker.add-progress(Δ);
 
+            my $before-requires = now;
             require MUGS::UI::TUI;
             $tracker.add-progress(Δ);
             require MUGS::UI::TUI::Layout::PrimaryMenu;
@@ -129,9 +136,18 @@ class MUGS::App::TUI is MUGS::App::LocalUI
             require MUGS::App::TUI::SettingsMenu;
             $tracker.add-progress(Δ);
             require MUGS::App::TUI::MainMenu;
+            note sprintf "UI Requires: %.3fs", now - $before-requires if $debug;
             $tracker.add-progress(Δ);
 
-            self.load-ui-plugins;
+            my $before-uis = now;
+            my @uis = self.load-ui-plugins;
+            if $debug {
+                note sprintf "UI plugins: %.3fs", now - $before-uis;
+                # XXXX: For some reason this list doesn't show up if MUGS::UI::TUI
+                #       is required above, but time still passes and plugins still
+                #       work as normal.
+                .raku.indent(2).note for @uis;
+            }
             $tracker.add-progress(Δ);
 
             for @loading-tasks {
