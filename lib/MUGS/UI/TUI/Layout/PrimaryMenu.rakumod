@@ -44,6 +44,7 @@ does MUGS::UI::TUI::Layout::StandardScreen {
 
     #| Go to a submenu
     method goto-submenu($name, $class) {
+        # XXXX: Redundant with goto-screen?
         # XXXX: Cache already-visited submenus?
         # XXXX: Generate submenus at app startup?
         my $submenu = $class.new(:$.x, :$.y, :$.z, :$.w, :$.h, :$.terminal,

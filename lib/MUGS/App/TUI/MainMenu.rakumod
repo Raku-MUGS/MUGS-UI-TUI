@@ -7,6 +7,7 @@ use Terminal::Widgets::I18N::Translation;
 use MUGS::UI::TUI::Logo;
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::App::TUI::SettingsMenu;
+use MUGS::App::TUI::AvailableGames;
 
 
 sub main-menu-items() {
@@ -113,8 +114,8 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     method process-selection($menu) {
         with $menu.items[$menu.selected] {
             given .<id> {
+                when 'local'    { self.goto-screen('available-games', AvailableGames) }
                 when 'network'  { }
-                when 'local'    { }
                 when 'settings' { self.goto-submenu('settings-menu', SettingsMenu) }
                 when 'help'     { self.goto-help }
                 when 'exit'     { $.terminal.quit }

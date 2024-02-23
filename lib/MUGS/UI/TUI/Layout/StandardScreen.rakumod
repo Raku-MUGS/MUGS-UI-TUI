@@ -180,6 +180,16 @@ does MUGS::UI::TUI::Layout::HintFooter {
         self.goto-help(self);
     }
 
+    #| Go to a new UI screen
+    method goto-screen($name, $class) {
+        # XXXX: Cache already-visited screens?
+        # XXXX: If yes, need to deal with refill/reformat at goto time
+        # XXXX: If no, need to GC old ones
+        my $new-screen = $class.new(:$.x, :$.y, :$.z, :$.w, :$.h, :$.terminal,
+                                    prev-screen => self);
+        $.terminal.set-toplevel($new-screen);
+    }
+
     #| Go to the previous menu or UI screen, if any
     method goto-prev-screen() {
         $.terminal.set-toplevel($.prev-screen) if $.prev-screen;
