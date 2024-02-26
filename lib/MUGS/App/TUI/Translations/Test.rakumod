@@ -19,6 +19,8 @@ sub translation-contexts() is export {
           desc    => 'Terminal Settings Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'available-games',
           desc    => 'Available Games screen elements' },
+        { moniker => 'optional-ui',
+          desc    => 'Optional UI form elements' },
     ;
 }
 
@@ -170,6 +172,38 @@ sub trans-pig() {
 
             'Return to top level main menu'
             => 'Eturnway otay optay evellay ainmay enumay',
+        },
+        optional-ui => {
+            # Breadcrumbs / title
+            'Optional Elements'           => 'Optionalway Elementsway',
+            'Optional UI Elements | MUGS' => 'Optionalway UIWAY Elementsway | UGSMAY',
+
+            # Form options
+            'Optional visuals'            => 'Optionalway isualsway',
+            'Menu item icons'             => 'Enumay itemway iconsway',
+            'Input activation flash'      => 'Inputway activationway ashflay',
+            'Input field hints'           => 'Inputway ieldfay intshay',
+
+            'History navigation'          => 'Istoryhay avigationnay',
+            'Breadcrumbs only'            => 'Eadcrumbsbray onlyway',
+            'Buttons/menu items only'     => 'Uttonsbay/enumay itemsway onlyway',
+            'Both'                        => 'Othbay',
+
+            'Menu headers'                => 'Enumay eadershay',
+            'Large'                       => 'Argelay',
+            'Small'                       => 'Allsmay',
+            'None'                        => 'Onenay',
+
+            # Buttons
+            'HELP!'                       => 'ELPHAY!',
+            'Save Changes'                => 'Avesay Angeschay',
+            'Cancel and Go Back'          => 'Ancelcay andway Ogay Ackbay',
+
+            # Form element hints
+            # XXXX: FILL IN
+
+            'View help info related to optional UI elements'
+            => 'Iewvay elphay infoway elatedray otay optionalway UIWAY elementsway',
         },
     ;
 }
