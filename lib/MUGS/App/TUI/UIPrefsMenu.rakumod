@@ -5,6 +5,7 @@ use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
+use MUGS::App::TUI::OptionalUI;
 
 
 sub ui-prefs-menu-items() {
@@ -89,7 +90,7 @@ class UIPrefsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
         with $menu.items[$menu.selected] {
             given .<id> {
                 when 'locale'       { }
-                when 'optional-ui'  { }
+                when 'optional-ui'  { self.goto-screen('optional-ui', OptionalUI) }
                 when 'help'         { self.goto-help }
                 when 'back'         { self.goto-prev-screen }
             }
