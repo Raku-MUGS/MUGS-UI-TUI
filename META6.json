@@ -22,6 +22,7 @@
     "MUGS::App::TUI::A11yMenu": "lib/MUGS/App/TUI/A11yMenu.rakumod",
     "MUGS::App::TUI::AvailableGames": "lib/MUGS/App/TUI/AvailableGames.rakumod",
     "MUGS::App::TUI::MainMenu": "lib/MUGS/App/TUI/MainMenu.rakumod",
+    "MUGS::App::TUI::OptionalUI": "lib/MUGS/App/TUI/OptionalUI.rakumod",
     "MUGS::App::TUI::SettingsMenu": "lib/MUGS/App/TUI/SettingsMenu.rakumod",
     "MUGS::App::TUI::TerminalMenu": "lib/MUGS/App/TUI/TerminalMenu.rakumod",
     "MUGS::App::TUI::Translations::Test": "lib/MUGS/App/TUI/Translations/Test.rakumod",
