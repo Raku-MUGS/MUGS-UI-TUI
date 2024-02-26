@@ -7,6 +7,8 @@ unit module MUGS::App::TUI::Translations::Test;
 #| context descriptions to assist translators
 sub translation-contexts() is export {
     constant @contexts =
+        { moniker => 'standard-form',
+          desc    => 'Standard form buttons and button hints' },
         { moniker => 'main-menu',
           desc    => 'Main Menu entries, hints, titles, and breadcrumbs' },
         { moniker => 'settings-menu',
@@ -29,6 +31,22 @@ sub translation-contexts() is export {
 #  Easy to notice, and tests widening every screen element
 sub trans-pig() {
     constant %trans =
+        standard-form => {
+            # Buttons
+            'HELP!'                       => 'ELPHAY!',
+            'Save Changes'                => 'Avesay Angeschay',
+            'Cancel and Go Back'          => 'Ancelcay andway Ogay Ackbay',
+
+            # Form element hints
+            'View help info related to this form'
+            => 'Iewvay elphay infoway elatedray otay isthay ormfay',
+
+            'Save changes from this form'
+            => 'Avesay angeschay omfray isthay ormfay',
+
+            'Discard changes from this form and go back to previous screen'
+            => 'Iscarday angeschay omfray isthay ormfay andway ogay ackbay otay eviouspray eenscray',
+        },
         main-menu => {
             # Breadcrumbs / title
             'Main'                     => 'Ainmay',
@@ -194,16 +212,8 @@ sub trans-pig() {
             'Small'                       => 'Allsmay',
             'None'                        => 'Onenay',
 
-            # Buttons
-            'HELP!'                       => 'ELPHAY!',
-            'Save Changes'                => 'Avesay Angeschay',
-            'Cancel and Go Back'          => 'Ancelcay andway Ogay Ackbay',
-
             # Form element hints
             # XXXX: FILL IN
-
-            'View help info related to optional UI elements'
-            => 'Iewvay elphay infoway elatedray otay optionalway UIWAY elementsway',
         },
     ;
 }

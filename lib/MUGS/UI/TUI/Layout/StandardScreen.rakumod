@@ -215,3 +215,52 @@ does MUGS::UI::TUI::Layout::HintFooter {
         @crumbs.map({ ~$locale.translate($_) }).join(' > ')
     }
 }
+
+
+#| A standard form with HELP!/Save/Cancel buttons
+role MUGS::UI::TUI::Layout::StandardForm
+does MUGS::UI::TUI::Layout::StandardScreen {
+
+    ### Required methods
+
+    #| Save changes from the current form
+    method save-changes() { ... }
+
+    #| Current form object
+    method form() { ... }
+
+
+    #| Define the overall layout of a standard form
+    method content-layout($builder, $max-width, $max-height) {
+        ¢'standard-form';
+
+        my %right-pad  = padding-width => (0, 1, 0, 0),;
+
+        with $builder {
+            # Center vertically
+            .node(),
+
+            # Main form
+            |self.form-layout($builder, $max-width, $max-height),
+
+            # HELP!/Save/Cancel buttons
+            .divider(line-style => 'light1', style => %( set-h => 1, ), ),
+            .node(style => %( :minimize-h, ),
+                  .button(:$.form, id => 'help', style => %right-pad,
+                          label => ¿'HELP!',
+                          process-input => { self.goto-help }),
+                  .button(:$.form, id => 'save', style => %right-pad,
+                          label => ¿'Save Changes',
+                          # XXXX: Confirmation of successful save?
+                          process-input => { self.save-changes;
+                                             self.goto-prev-screen }),
+                  .button(:$.form, id => 'cancel',
+                          label => ¿'Cancel and Go Back',
+                          process-input => { self.goto-prev-screen }),
+                  .node(),
+                 ),
+
+            .node(),
+        }
+    }
+}
