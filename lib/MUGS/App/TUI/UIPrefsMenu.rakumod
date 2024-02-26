@@ -1,7 +1,5 @@
 # ABSTRACT: UI Preferences Menu UI
 
-use Text::MiscUtils::Emojify;
-use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
@@ -39,51 +37,14 @@ sub ui-prefs-menu-items() {
         };
 }
 
-sub ui-prefs-menu-icons(Terminal::Capabilities:D $caps) {
-    my constant %icons =
-        ASCII => {
-            locale      => '',
-            optional-ui => '',
-            help        => '',
-            back        => '',
-        },
-        WGL4R => {
-            locale      => '¥',  # ¥ ¿ ö
-            optional-ui => '√',
-            help        => '?',
-            back        => '▲',  # ←
-        },
-        WGL4 => {
-            locale      => '¥',  # ¥ ¿ ö
-            optional-ui => '√',
-            help        => '?',
-            back        => '◄',
-        },
-        Uni1 => {
-            locale      => '¥',  # ¥ ¿ ö
-            optional-ui => '☑',
-            help        => '?',
-            back        => '◀',
-        },
-        Uni7 => {
-            locale      => emojify('🌍'),
-            optional-ui => emojify('☑'),   # 🗹
-            help        => emojify('❓'),  # ⁇
-            back        => emojify('⬅'),  # 🡄
-        },
-    ;
-
-    $caps.best-symbol-choice(%icons)
-}
-
 
 #| UI preferences menu
 class UIPrefsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
+    has Str:D $.icon-name  = 'ui-prefs';
     has Str:D $.grid-name  = 'ui-prefs-menu';
     has       $.breadcrumb = 'ui-prefs-menu' ¢¿ 'UI Preferences';
     has       $.title      = 'ui-prefs-menu' ¢¿ 'UI Preferences | MUGS';
     has       $.items      =  ui-prefs-menu-items;
-    has       $.icons      =  ui-prefs-menu-icons(self.terminal.caps);
 
     #| Process menu selections
     method process-selection($menu) {

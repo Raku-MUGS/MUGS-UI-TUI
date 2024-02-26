@@ -1,7 +1,5 @@
 # ABSTRACT: Settings Menu UI
 
-use Text::MiscUtils::Emojify;
-use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
@@ -47,56 +45,14 @@ sub settings-menu-items() {
         };
 }
 
-sub settings-menu-icons(Terminal::Capabilities:D $caps) {
-    my constant %icons =
-        ASCII => {
-            a11y     => '',
-            ui-prefs => '',
-            terminal => '',
-            help     => '',
-            back     => '',
-        },
-        WGL4R => {
-            a11y     => '♥',
-            ui-prefs => '┼',
-            terminal => '□',  # ■ ⌧  ▭
-            help     => '?',
-            back     => '▲',  # ←
-        },
-        WGL4 => {
-            a11y     => '☻',  # ☼ ♥
-            ui-prefs => '┼',
-            terminal => '□',  # ■ ⌧  ▭
-            help     => '?',
-            back     => '◄',
-        },
-        Uni1 => {
-            a11y     => '☻',  # ☼ ♥ ❤
-            ui-prefs => '┿',  # ┼ ┿ ╂
-            terminal => '▢',  # ⌧ ▭
-            help     => '?',
-            back     => '◀',
-        },
-        Uni7 => {
-            a11y     => emojify('♿'),
-            ui-prefs => emojify('🎚'),
-            terminal => emojify('🖵'),
-            help     => emojify('❓'),  # ⁇
-            back     => emojify('⬅'),  # 🡄
-        },
-    ;
-
-    $caps.best-symbol-choice(%icons)
-}
-
 
 #| Settings menu
 class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
+    has Str:D $.icon-name  = 'settings';
     has Str:D $.grid-name  = 'settings-menu';
     has       $.breadcrumb = 'settings-menu' ¢¿ 'Settings';
     has       $.title      = 'settings-menu' ¢¿ 'Settings Menu | MUGS';
     has       $.items      =  settings-menu-items;
-    has       $.icons      =  settings-menu-icons(self.terminal.caps);
 
     #| Process menu selections
     method process-selection($menu) {

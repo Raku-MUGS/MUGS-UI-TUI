@@ -1,7 +1,5 @@
 # ABSTRACT: Main Menu UI
 
-use Text::MiscUtils::Emojify;
-use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Logo;
@@ -47,48 +45,6 @@ sub main-menu-items() {
         };
 }
 
-sub main-menu-icons(Terminal::Capabilities:D $caps) {
-    my constant %icons =
-        ASCII => {
-            local    => '.',
-            network  => '@',
-            settings => '*',
-            help     => '?',
-            exit     => "\x3c",  # ^
-        },
-        WGL4R => {
-            local    => '•',
-            network  => '↔',
-            settings => '*',
-            help     => '?',
-            exit     => '▲',  # ←
-        },
-        WGL4 => {
-            local    => '•',
-            network  => '↔',
-            settings => '*',
-            help     => '?',
-            exit     => '◄',
-        },
-        Uni1 => {
-            local    => '◎',  # • (BULLET)  ⌨ (KEYBOARD)
-            network  => '⇄',  # ┯┷  ¤  ‡  ↔  ⇋  ⇌
-            settings => '✔',  # ☑ ☒ ✓ ↕
-            help     => '?',
-            exit     => '◀',
-        },
-        Uni7 => {
-            local    => emojify('💻'),  # 🞋
-            network  => emojify('🖧'),
-            settings => emojify('⚙'),
-            help     => emojify('❓'),  # ⁇
-            exit     => emojify('⬅'),  # 🡄
-        },
-    ;
-
-    $caps.best-symbol-choice(%icons)
-}
-
 
 #| Main menu with logo above menu items
 class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
@@ -97,18 +53,10 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has       $.breadcrumb  = 'main-menu' ¢¿ 'Main';
     has       $.title       = 'main-menu' ¢¿ 'Main Menu | MUGS';
     has       $.items       =  main-menu-items;
-    has       $.icons       =  main-menu-icons(self.terminal.caps);
-    has       $.logo-text   =  mugs-logo(self.terminal.caps);
 
-    #| Define initial layout for header section of menu page
-    method menu-header-layout($builder, $max-width, $max-height) {
-        # Space above height-minimized logo
-        with $builder {
-            .node(),
-            .plain-text(id => 'logo', text => $.logo-text,
-                        style => %( :minimize-h, ))
-        }
-    }
+    # Menu header variants
+    method menu-header-large() { mugs-logo(self.terminal.caps) }
+    method menu-header-small() { mugs-logo-small(self.terminal.caps) }
 
     #| Process menu selections
     method process-selection($menu) {

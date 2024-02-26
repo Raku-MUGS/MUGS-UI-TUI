@@ -1,7 +1,5 @@
 # ABSTRACT: Terminal Menu UI
 
-use Text::MiscUtils::Emojify;
-use Terminal::Capabilities;
 use Terminal::Widgets::I18N::Translation;
 
 use MUGS::UI::TUI::Layout::PrimaryMenu;
@@ -44,56 +42,14 @@ sub terminal-menu-items() {
         };
 }
 
-sub terminal-menu-icons(Terminal::Capabilities:D $caps) {
-    my constant %icons =
-        ASCII => {
-            colors       => '',
-            symbols      => '',
-            line-drawing => '',
-            help         => '',
-            back         => '',
-        },
-        WGL4R => {
-            colors       => '▒',
-            symbols      => '§',
-            line-drawing => '╠',
-            help         => '?',
-            back         => '▲',  # ←
-        },
-        WGL4 => {
-            colors       => '▒',
-            symbols      => '§',
-            line-drawing => '╠',
-            help         => '?',
-            back         => '◄',
-        },
-        Uni1 => {
-            colors       => '▒',
-            symbols      => '§',
-            line-drawing => '╠',  # ╩
-            help         => '?',
-            back         => '◀',
-        },
-        Uni7 => {
-            colors       => emojify('🎨'),
-            symbols      => emojify('🔣'),
-            line-drawing => '╠═',  # ╭╌  ╟─  ╠═  ╔╗  ┌┐  ┬┴
-            help         => emojify('❓'),  # ⁇
-            back         => emojify('⬅'),  # 🡄
-        },
-    ;
-
-    $caps.best-symbol-choice(%icons)
-}
-
 
 #| Terminal settings menu
 class TerminalMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
+    has Str:D $.icon-name  = 'terminal';
     has Str:D $.grid-name  = 'terminal-menu';
     has       $.breadcrumb = 'terminal-menu' ¢¿ 'Terminal';
     has       $.title      = 'terminal-menu' ¢¿ 'Terminal Settings | MUGS';
     has       $.items      =  terminal-menu-items;
-    has       $.icons      =  terminal-menu-icons(self.terminal.caps);
 
     #| Process menu selections
     method process-selection($menu) {
