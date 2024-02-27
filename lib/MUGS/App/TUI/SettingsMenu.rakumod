@@ -58,9 +58,9 @@ class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     method process-selection($menu) {
         with $menu.items[$menu.selected] {
             given .<id> {
-                when 'a11y'     { self.goto-submenu('a11y-menu',     A11yMenu)     }
-                when 'ui-prefs' { self.goto-submenu('ui-prefs-menu', UIPrefsMenu)  }
-                when 'terminal' { self.goto-submenu('terminal-menu', TerminalMenu) }
+                when 'a11y'     { self.goto-screen('a11y-menu',     A11yMenu)     }
+                when 'ui-prefs' { self.goto-screen('ui-prefs-menu', UIPrefsMenu)  }
+                when 'terminal' { self.goto-screen('terminal-menu', TerminalMenu) }
                 when 'help'     { self.goto-help }
                 when 'back'     { self.goto-prev-screen }
             }

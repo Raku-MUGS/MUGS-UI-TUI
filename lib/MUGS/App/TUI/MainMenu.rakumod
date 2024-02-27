@@ -64,7 +64,7 @@ class MainMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
             given .<id> {
                 when 'local'    { self.goto-screen('available-games', AvailableGames) }
                 when 'network'  { }
-                when 'settings' { self.goto-submenu('settings-menu', SettingsMenu) }
+                when 'settings' { self.goto-screen('settings-menu', SettingsMenu) }
                 when 'help'     { self.goto-help }
                 when 'exit'     { $.terminal.quit }
             }
