@@ -27,7 +27,10 @@ does MUGS::UI::TUI::Layout::StandardScreen {
     }
 
     #| Return main UI icon set for given terminal capabilities
-    method icons() { main-ui-icons(self.terminal.caps) }
+    method icons() {
+        my $enabled = self.terminal.ui-prefs<menu-item-icons>;
+        $enabled ?? main-ui-icons(self.terminal.caps) !! {}
+    }
 
     #| Return an array of all possible hints for this screen
     method hints() { @.items.map(*<hint> // '') }
@@ -35,11 +38,11 @@ does MUGS::UI::TUI::Layout::StandardScreen {
     #| Define initial layout for header section of menu page
     method menu-header-layout($builder, $max-width, $max-height) {
         # XXXX: Turn into an enum?
-        my $header-size = 'small';
-        my $logo = do given $header-size {
-            when 'large' { self.menu-header-large }
-            when 'small' { self.menu-header-small }
-            default      { '' }
+        my $headers = self.terminal.ui-prefs<menu-headers>;
+        my $logo = do given $headers {
+            when 'large-menu-headers' { self.menu-header-large }
+            when 'small-menu-headers' { self.menu-header-small }
+            default                   { '' }
         };
         return Empty unless $logo;
 
