@@ -62,13 +62,15 @@ does MUGS::UI::TUI::Layout::StandardScreen {
         # XXXX: Is it actually necessary to pass the menu as an argument here?
         my &process-input = { self.process-selection($_) }
 
+        my $use-hints = self.terminal.ui-prefs<input-field-hints>;
+
         with $builder {
             .node(),
 
             |self.menu-header-layout($builder, $max-width, $max-height),
 
             .menu(id => 'menu', :@.items, :%.icons, :&process-input,
-                  hint-target => 'hint',
+                  hint-target => $use-hints ?? 'hint' !! '',
                   color => %( focused => '', ),
                   style => %( :minimize-h, )),
 

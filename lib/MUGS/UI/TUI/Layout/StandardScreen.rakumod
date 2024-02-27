@@ -54,10 +54,13 @@ role MUGS::UI::TUI::Layout::NavHeader {
 
     #| Define the initial header layout constraints
     method screen-header-layout($builder, $max-width, $max-height) {
+        my $history-nav = self.terminal.ui-prefs<history-nav>;
+        my $use-breadcrumbs = $history-nav ne 'buttons-menus-only';
+
         with $builder {
             # XXXX: Special breadcrumbs input widget?
             .plain-text(id => 'breadcrumbs', style => %( :minimize-h, ),
-                        text => self.breadcrumbs),
+                        text => $use-breadcrumbs ?? self.breadcrumbs !! ''),
         }
     }
 }
