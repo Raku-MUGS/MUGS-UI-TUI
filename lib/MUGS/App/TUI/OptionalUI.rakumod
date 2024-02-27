@@ -36,7 +36,7 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
         }
 
         my sub radio-group($group, *@pairs) {
-            my $current = self.selected($group);
+            my $current = self.terminal.ui-prefs{$group};
             @pairs.map: {
                 $builder.radio-button(:$.form, :$group, id => .key, label => .value,
                                       state => .key eq $current)
