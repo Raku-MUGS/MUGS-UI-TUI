@@ -5,7 +5,7 @@ use Terminal::Widgets::I18N::Translation;
 use MUGS::UI::TUI::Layout::PrimaryMenu;
 
 
-sub terminal-menu-items() {
+sub terminal-menu-items($show-back) {
     ¢'terminal-menu';
 
     # XXXX: Translation of hotkeys
@@ -34,12 +34,12 @@ sub terminal-menu-items() {
             hint    => ¿'View help info related to terminal settings',
             hotkeys => < h H ? ¿ ; >,
         },
-        {
+        ({
             id      =>  'back',
             title   => ¿'Back to Settings Menu',
             hint    => ¿'Return to previous menu level (Settings)',
             hotkeys => < b B s S CursorLeft Escape Ctrl-C >,
-        };
+        } if $show-back);
 }
 
 
@@ -49,7 +49,7 @@ class TerminalMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name  = 'terminal-menu';
     has       $.breadcrumb = 'terminal-menu' ¢¿ 'Terminal';
     has       $.title      = 'terminal-menu' ¢¿ 'Terminal Settings | MUGS';
-    has       $.items      =  terminal-menu-items;
+    has       $.items      =  terminal-menu-items(self.show-back);
 
     #| Process menu selections
     method process-selection($menu) {

@@ -6,7 +6,7 @@ use MUGS::UI::TUI::Layout::PrimaryMenu;
 use MUGS::App::TUI::OptionalUI;
 
 
-sub ui-prefs-menu-items() {
+sub ui-prefs-menu-items($show-back) {
     ¢'ui-prefs-menu';
 
     # XXXX: Translation of hotkeys
@@ -29,12 +29,12 @@ sub ui-prefs-menu-items() {
             hint    => ¿'View help info related to UI preferences',
             hotkeys => < h H ? ¿ ; >,
         },
-        {
+        ({
             id      =>  'back',
             title   => ¿'Back to Settings Menu',
             hint    => ¿'Return to previous menu level (Settings)',
             hotkeys => < b B s S CursorLeft Escape Ctrl-C >,
-        };
+        } if $show-back);
 }
 
 
@@ -44,7 +44,7 @@ class UIPrefsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name  = 'ui-prefs-menu';
     has       $.breadcrumb = 'ui-prefs-menu' ¢¿ 'UI Preferences';
     has       $.title      = 'ui-prefs-menu' ¢¿ 'UI Preferences | MUGS';
-    has       $.items      =  ui-prefs-menu-items;
+    has       $.items      =  ui-prefs-menu-items(self.show-back);
 
     #| Process menu selections
     method process-selection($menu) {

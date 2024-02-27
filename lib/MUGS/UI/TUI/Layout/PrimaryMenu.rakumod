@@ -32,6 +32,12 @@ does MUGS::UI::TUI::Layout::StandardScreen {
         $enabled ?? main-ui-icons(self.terminal.caps) !! {}
     }
 
+    #| Whether to add "Back to Previous Menu" items to menu lists
+    method show-back() {
+        my $history-nav = self.terminal.ui-prefs<history-nav> // '';
+        $history-nav ne 'breadcrumbs-only'
+    }
+
     #| Return an array of all possible hints for this screen
     method hints() { @.items.map(*<hint> // '') }
 

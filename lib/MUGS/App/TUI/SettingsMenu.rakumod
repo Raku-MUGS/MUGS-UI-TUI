@@ -8,7 +8,7 @@ use MUGS::App::TUI::TerminalMenu;
 use MUGS::App::TUI::UIPrefsMenu;
 
 
-sub settings-menu-items() {
+sub settings-menu-items($show-back) {
     ¢'settings-menu';
 
     # XXXX: Translation of hotkeys
@@ -37,12 +37,12 @@ sub settings-menu-items() {
             hint    => ¿'View help info related to settings',
             hotkeys => < h H ? ¿ ; >,
         },
-        {
+        ({
             id      =>  'back',
             title   => ¿'Back to Main Menu',
             hint    => ¿'Return to top level main menu',
             hotkeys => < b B m M CursorLeft Escape Ctrl-C >,
-        };
+        } if $show-back);
 }
 
 
@@ -52,7 +52,7 @@ class SettingsMenu does MUGS::UI::TUI::Layout::PrimaryMenu {
     has Str:D $.grid-name  = 'settings-menu';
     has       $.breadcrumb = 'settings-menu' ¢¿ 'Settings';
     has       $.title      = 'settings-menu' ¢¿ 'Settings Menu | MUGS';
-    has       $.items      =  settings-menu-items;
+    has       $.items      =  settings-menu-items(self.show-back);
 
     #| Process menu selections
     method process-selection($menu) {
