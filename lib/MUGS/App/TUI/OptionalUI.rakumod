@@ -75,8 +75,23 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
     }
 
     method save-changes() {
-        # XXXX: Actually save changes!  :-)
+        # XXXX: Actually save changes to user config!  :-)
         # XXXX: Save for MUGS-UI-TUI, MUGS-Core, or Terminal-Widgets?
+
+        my $ui-prefs = %(
+            |self.terminal.ui-prefs,
+
+            # Checkboxes
+            menu-item-icons        => %.by-id<menu-item-icons>.state,
+            input-activation-flash => %.by-id<input-activation-flash>.state,
+            input-field-hints      => %.by-id<input-field-hints>.state,
+
+            # Radio button groups
+            history-nav  => self.selected('history-nav'),
+            menu-headers => self.selected('menu-headers'),
+        );
+
+        self.terminal.set-ui-prefs($ui-prefs);
     }
 
     method focus-on-content(Bool:D :$redraw = False) {
