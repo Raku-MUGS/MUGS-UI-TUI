@@ -87,6 +87,11 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
         ));
 
         self.terminal.set-ui-prefs($ui-prefs);
+
+        # After setting preferences, start over with a fresh new main menu
+        # XXXX: This is a hack to work around set-ui-prefs not doing complete relayout
+        my $main-menu-class = self.screen-trail[*-1].WHAT;
+        self.goto-screen('main-menu', $main-menu-class, Nil);
     }
 
     method selected($group) {

@@ -255,8 +255,7 @@ does MUGS::UI::TUI::Layout::StandardScreen {
                   .button(:$.form, id => 'save', style => %right-pad,
                           label => ¿'Save Changes',
                           # XXXX: Confirmation of successful save?
-                          process-input => { self.save-changes;
-                                             self.goto-prev-screen }),
+                          process-input => { self.save-changes }),
                   .button(:$.form, id => 'cancel',
                           label => ¿'Cancel and Go Back',
                           process-input => { self.goto-prev-screen }),
