@@ -15,11 +15,6 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
 
     has @.hints; # XXXX: Just to satisfy role requirements for now
 
-    method selected($group) {
-        my $button = self.toplevel.group-members($group).first(*.state);
-        $button ?? $button.id !! self.terminal.app.ui-default($group)
-    }
-
     method form-layout($builder, $max-width, $max-height) {
         ¢'optional-ui';
 
@@ -92,6 +87,11 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
         ));
 
         self.terminal.set-ui-prefs($ui-prefs);
+    }
+
+    method selected($group) {
+        my $button = self.toplevel.group-members($group).first(*.state);
+        $button ?? $button.id !! self.terminal.app.ui-default($group)
     }
 
     method focus-on-content(Bool:D :$redraw = False) {
