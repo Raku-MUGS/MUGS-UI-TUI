@@ -86,20 +86,20 @@ class MUGS::App::TUI is MUGS::App::LocalUI
 
         my @ui-pref-keys = < menu-item-icons input-activation-flash
                              input-field-hints history-nav menu-headers >;
-        my %ui-prefs;
+        my $ui-prefs;
 
         if $*SAFE {
             $!symbols     //= 'ascii';
             $!vt100-boxes //= False;
-            %ui-prefs = @ui-pref-keys.map({ $_ => self.ui-default($_) });
+            $ui-prefs = @ui-pref-keys.map({ $_ => self.ui-default($_) }).Map;
         }
         else {
             $!symbols     //= self.ui-config('symbols');
             $!vt100-boxes //= self.ui-config('vt100-boxes');
-            %ui-prefs = @ui-pref-keys.map({ $_ => self.ui-config($_) });
+            $ui-prefs = @ui-pref-keys.map({ $_ => self.ui-config($_) }).Map;
         }
 
-        $!terminal = self.add-terminal(:%ui-prefs, :$.symbols, :$.vt100-boxes);
+        $!terminal = self.add-terminal(:$ui-prefs, :$.symbols, :$.vt100-boxes);
     }
 
     #| Make a simple progress bar for the loading screen

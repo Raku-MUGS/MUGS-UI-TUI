@@ -78,7 +78,7 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
         # XXXX: Actually save changes to user config!  :-)
         # XXXX: Save for MUGS-UI-TUI, MUGS-Core, or Terminal-Widgets?
 
-        my $ui-prefs = %(
+        my $ui-prefs = Map.new((
             |self.terminal.ui-prefs,
 
             # Checkboxes
@@ -89,7 +89,7 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
             # Radio button groups
             history-nav  => self.selected('history-nav'),
             menu-headers => self.selected('menu-headers'),
-        );
+        ));
 
         self.terminal.set-ui-prefs($ui-prefs);
     }
