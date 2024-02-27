@@ -237,7 +237,9 @@ does MUGS::UI::TUI::Layout::StandardScreen {
     method content-layout($builder, $max-width, $max-height) {
         ¢'standard-form';
 
-        my %right-pad  = padding-width => (0, 1, 0, 0),;
+        my %right-pad       = padding-width => (0, 1, 0, 0),;
+        my $history-nav     = self.terminal.ui-prefs<history-nav>;
+        my $use-nav-buttons = $history-nav ne 'breadcrumbs-only';
 
         with $builder {
             # Center vertically
@@ -256,9 +258,10 @@ does MUGS::UI::TUI::Layout::StandardScreen {
                           label => ¿'Save Changes',
                           # XXXX: Confirmation of successful save?
                           process-input => { self.save-changes }),
-                  .button(:$.form, id => 'cancel',
-                          label => ¿'Cancel and Go Back',
-                          process-input => { self.goto-prev-screen }),
+                  (.button(:$.form, id => 'cancel',
+                           label => ¿'Cancel and Go Back',
+                           process-input => { self.goto-prev-screen })
+                   if $use-nav-buttons),
                   .node(),
                  ),
 
