@@ -15,12 +15,35 @@ class OptionalUI does MUGS::UI::TUI::Layout::StandardForm {
 
     has @.hints; # XXXX: Just to satisfy role requirements for now
 
+    method selected($group) {
+        my $button = self.toplevel.group-members($group).first(*.state);
+        $button ?? $button.id !! self.terminal.app.ui-default($group)
+    }
+
     method form-layout($builder, $max-width, $max-height) {
         ¢'optional-ui';
 
         # Subsection styling
         my %subsection = :minimize-h, margin-width => (0, 0, 1, 0);
 
+        # Helper subs for state-retaining checkboxes and radio button groups
+        # XXXX: Allow specifying style info?
+        my sub checkbox($id, $label) {
+            my $terminal = self.terminal;
+            $builder.checkbox(:$.form, :$id, :$label,
+                              state => $terminal.ui-prefs{$id}
+                                    // $terminal.app.ui-default($id))
+        }
+
+        my sub radio-group($group, *@pairs) {
+            my $current = self.selected($group);
+            @pairs.map: {
+                $builder.radio-button(:$.form, :$group, id => .key, label => .value,
+                                      state => .key eq $current)
+            }
+        }
+
+        # Actually build layout and form settings
         with $builder {
             # XXXX: Set up field hints
             # XXXX: Translate plain text fields
