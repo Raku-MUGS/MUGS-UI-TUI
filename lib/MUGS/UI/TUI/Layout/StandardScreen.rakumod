@@ -121,11 +121,12 @@ role MUGS::UI::TUI::Layout::HintFooter {
     #| Define the initial footer layout constraints
     method screen-footer-layout($builder, $max-width, $max-height) {
         my ($min-w, $min-h) = self.max-wrapped-dims(@.hints);
+        my $colorset        = self.terminal.colorset;
+        my $color           = $colorset.current-color(%(:text, :hint));
 
         with $builder {
             # Full width, minimum height
-            # XXXX: Factor out other color and style settings
-            .plain-text(id => 'hint', color => 'italic', :wrap,
+            .plain-text(id => 'hint', :$color, :wrap,
                         style => %( :$min-w, :$min-h, :minimize-h )),
         }
     }
