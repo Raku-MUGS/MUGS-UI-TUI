@@ -241,7 +241,7 @@ sub main-menu(Bool :$safe, UInt :$debug, *%ui-options) {
         # XXXX: Check loader?
         my %trans     := %lang-info<loader>();
         my $terminal   = $app-ui.terminal;
-        $terminal.set-locale($terminal.locale.clone(string-table => %trans));
+        $terminal.set-locale($terminal.locale.new(string-table => %trans));
 
         $t-load-trans = now;
     }
