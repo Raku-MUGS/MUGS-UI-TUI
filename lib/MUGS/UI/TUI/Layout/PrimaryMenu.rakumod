@@ -23,7 +23,7 @@ does MUGS::UI::TUI::Layout::StandardScreen {
         my $icon = self.icons{self.icon-name} // '';
 
         ("$icon " if $icon)
-        ~ self.terminal.locale.translate(self.breadcrumb)
+        ~ self.terminal.locale.plain-text(self.breadcrumb)
     }
 
     #| Return main UI icon set for given terminal capabilities

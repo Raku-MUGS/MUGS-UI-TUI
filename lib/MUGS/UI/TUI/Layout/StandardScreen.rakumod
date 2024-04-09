@@ -111,7 +111,7 @@ role MUGS::UI::TUI::Layout::HintFooter {
     method max-wrapped-dims(@items) {
         # Wrap each text item and ensure enough room to display any of them
         my $locale    = $.terminal.locale;
-        my @wrapped   = @items.map({ text-wrap($.w, ~$locale.translate($_)) });
+        my @wrapped   = @items.map({ text-wrap($.w, $locale.plain-text($_)) });
         my $max-lines = 0 max @wrapped.map(*.elems).max;
         my $max-width = 0 max @wrapped.map(*.map(&duospace-width)).flat.max;
 
@@ -216,7 +216,7 @@ does MUGS::UI::TUI::Layout::HintFooter {
         my $locale = $.terminal.locale;
         my @crumbs = self.screen-trail.reverse.map(*.?breadcrumb).grep(?*);
 
-        @crumbs.map({ ~$locale.translate($_) }).join(' > ')
+        @crumbs.map({ $locale.plain-text($_) }).join(' > ')
     }
 }
 

@@ -28,7 +28,7 @@ class ProgressBar is Terminal::Widgets::Widget
     submethod TWEAK() {
         # Render initial text
         my $locale = $!terminal.locale;
-        my @lines  = $locale.translate($!text).Str.lines;
+        my @lines  = $locale.plain-text($!text).lines;
         my $top    = (self.h - @lines) div 2;
         for @lines.kv -> $i, $line {
             self.grid.set-span-text((self.w - $locale.width($line)) div 2,
